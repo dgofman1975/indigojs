@@ -1,0 +1,91 @@
+/* MenuBar */
+.menubar-container > .menubar ul {
+    margin: 0;
+    padding: 0;
+}
+
+.menubar-container > .menubar li {
+    list-style: none;
+    float: left;
+    cursor: pointer;
+}
+
+.menubar-container > .menubar li > span{
+    display: block;
+    text-decoration: none;
+    color: #ffffff;
+    padding: 5px 10px 5px 10px;
+    border-left: 1px solid #142635;
+    border-right: 1px solid #335774;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3) inset;
+    background-color: #CEAFD6;
+}
+
+.menubar-container > .menubar li > span:hover {
+    background-color: #0397D6;
+}
+
+/* MenuBar - sub menu */
+.menubar-container > .menubar li ul {
+    position: absolute;
+    visibility: hidden;
+    border-top: 1px solid #142635;
+    border-bottom: 1px solid #335774;
+}
+
+.menubar-container > .menubar li ul li {
+    display: inline;
+    float: none;
+}
+
+.menubar-container > .menubar li ul li > span {
+    background-color: #536D84;
+    width: auto;
+}
+
+.menubar-container > .menubar li ul li > span:hover {
+    background-color: #0397D6;
+}
+
+.menubar-container > .menubar .menuSelected {
+    background-color: #39B54A;
+}
+
+/* ColorPicker */
+.color-picker {
+    position: absolute;
+    background-color: threedface;
+    border-color: threedhighlight threedshadow threedshadow threedhighlight;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.color-picker > .pallete {
+    position: relative;
+    background: url("../assets/icons/color-picker/palette.png") no-repeat;
+    margin: 10px 40px 10px 10px;
+    cursor: crosshair;
+}
+
+.color-picker > .pallete  > .cursor{
+    position: absolute;
+    background: url("../assets/icons/color-picker/cross.gif") no-repeat;
+    width: 15px;
+    height: 15px;
+}
+
+.color-picker > .slider {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.color-picker > .slider  > .cursor{
+    position: absolute;
+    background: url("../assets/icons/color-picker/arrow.gif") no-repeat;
+    width: 7px;
+    height: 11px;
+    margin: -5px 0 0 -7px;
+}
