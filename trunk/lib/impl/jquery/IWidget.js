@@ -1,11 +1,8 @@
 /**
  *
- * Copyright © 2013 Softigent Inc. All rights reserved.
+ * Copyright © 2013 Softigent Inc..
  *
- *   Permission is granted to copy, and distribute verbatim copies
- *   of this license document, but changing it is not allowed.
- *
- *   Author: David Gofman
+ * Author: David Gofman
  */
 
 register('impl.jquery::IWidget', function() {
@@ -44,14 +41,35 @@ register('impl.jquery::IWidget', function() {
                 css: function(value) {
                     return typeof(value) == 'string' ? o.css(value) : !o.css(value) || _;
                 },
+                val: function(value) {
+                    return undef(value) ? o.val() : !o.val(value) || _;
+                },
+                attr: function(name, value) {
+                    return undef(value) ? o.attr(name) : !o.attr(name, value) || _;
+                },
+                html: function(value) {
+                    return undef(value) ? o.html() : !o.html(value) || _;
+                },
+                text: function(value) {
+                    return undef(value) ? o.text() : !o.text(value) || _;
+                },
                 bind: function(type, listener) {
                     return !o.bind(type, listener) || _;
                 },
                 unbind: function(type, listener) {
                     return !o.unbind(type, listener) || _;
                 },
-                append: function(elem) {
-                    o.append(elem.$);
+                append: function(elem, position) {
+                    switch(position) {
+                        case 'before':
+                            o.before(elem.$);
+                            break;
+                        case 'after':
+                            o.after(elem.$);
+                            break;
+                        default:
+                            o.append(elem.$);
+                    }
                     return _;
                 },
                 remove: function() {

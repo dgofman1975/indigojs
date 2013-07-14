@@ -1,11 +1,8 @@
 /**
  *
- * Copyright © 2013 Softigent Inc. All rights reserved.
+ * Copyright © 2013 Softigent Inc..
  *
- *   Permission is granted to copy, and distribute verbatim copies
- *   of this license document, but changing it is not allowed.
- *
- *   Author: David Gofman
+ * Author: David Gofman
  */
 
 register('com.indigojs.core::Loader', function() {
@@ -139,6 +136,17 @@ var loaderComplete = function(me, args, prop) {
     );
     Loader.import.apply(me, args);
     return me;
+};
+
+Loader.extends = Function.prototype.extends; //save Indigo.js implementation
+Function.prototype.extends = function(superClass, apis) {
+    if (undef(Loader.classMap[superClass])) {
+        try {
+            eval(superClass);
+        }catch(e) {}
+        this.import(superClass);
+    }
+    Loader.extends.apply(this, [superClass, apis]);
 };
 
 Function.prototype.import = function() {

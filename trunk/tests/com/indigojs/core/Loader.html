@@ -7,7 +7,7 @@
   <script type="text/javascript" src="../../../../vendor/d3.js"></script>
   <script type="text/javascript" src="../../../../vendor/dojo.js"></script>
 
-  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js" lang="d3">
+  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js" lang="jquery">
         /*
          * supporting "lang" attributes: "native", "jquery", "d3", "dojo"
          */
@@ -23,16 +23,31 @@
 
     function main() {
         var widget = new Widget("#widget_div");
-        widget.css({"margin":"40px"});
-        widget.move("10px", "20px").size("100px", "200px");
+        widget.css({"margin":"40px", "padding":"5px"});
+        widget.move("10px", "20px").size("500px", "200px");
         Assert.assertEquals(widget.offset().top, 60, "Widget offset top");
         Assert.assertEquals(widget.offset().left, 50, "Widget offset left");
         Assert.assertEquals(widget.x(), 10, "Widget x");
         Assert.assertEquals(widget.y(), 20, "Widget y");
-        Assert.assertEquals(widget.width(), 100, "Widget width");
+        Assert.assertEquals(widget.width(), 500, "Widget width");
         Assert.assertEquals(widget.height(), 200, "Widget height");
         widget.css({"background":"green"});
         Assert.assertEquals(widget.css("background-color"), "rgb(0, 128, 0)", "Widget background color");
+        widget.attr("myattr", "myval");
+        Assert.assertEquals(widget.attr("myattr"), "myval", "Widget get attribute");
+        widget.html("<p>Hello World!</p>");
+        Assert.assertEquals(widget.html(), "<p>Hello World!</p>", "Widget get html");
+        Assert.assertEquals(widget.text(), "Hello World!", "Widget get text");
+
+        var input = IWidget.create("<input>");
+        input.val("Type here...");
+        Assert.assertEquals(input.val(), "Type here...", "Input value");
+        widget.append(input);
+
+        widget.append(IWidget.create("<p>LAST</p>"));
+        input.append(IWidget.create("<p>BEFORE</p>"), "before");
+        input.append(IWidget.create("<p>AFTER</p>"), "after");
+
         Assert.assertEquals(Loader.list().length, 5, "Loaded classes");
         Utils.log(LOGALL, Loader.list());
     }

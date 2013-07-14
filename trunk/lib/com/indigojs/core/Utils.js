@@ -1,11 +1,8 @@
 /**
  *
- * Copyright © 2013 Softigent Inc. All rights reserved.
+ * Copyright © 2013 Softigent Inc..
  *
- *   Permission is granted to copy, and distribute verbatim copies
- *   of this license document, but changing it is not allowed.
- *
- *   Author: David Gofman
+ * Author: David Gofman
  */
 
 var LOGALL    = 0,

@@ -1,11 +1,8 @@
 /**
  *
- * Copyright © 2013 Softigent Inc. All rights reserved.
+ * Copyright © 2013 Softigent Inc..
  *
- *   Permission is granted to copy, and distribute verbatim copies
- *   of this license document, but changing it is not allowed.
- *
- *   Author: David Gofman
+ * Author: David Gofman
  */
 
 register('impl.native::IWidget', function() {
@@ -52,6 +49,18 @@ register('impl.native::IWidget', function() {
                         o.style.setProperty(key, value[key]);
                     return _;
                 },
+                val: function(value) {
+                    return undef(value) ? o.value : !(o.value = value)|| _;
+                },
+                attr: function(name, value) {
+                    return undef(value) ? o.getAttribute(name) : !o.setAttribute(name, value) || _;
+                },
+                html: function(value) {
+                    return undef(value) ? o.innerHTML : !(o.innerHTML = value) || _;
+                },
+                text: function(value) {
+                    return undef(value) ? o.textContent : !(o.textContent = value) || _;
+                },
                 bind: function(type, listener) {
                     if (o.attachEvent) {
                         o.attachEvent('on' + type, listener);
@@ -68,12 +77,29 @@ register('impl.native::IWidget', function() {
                     }
                     return _;
                 },
-                append: function(elem) {
-                    o.appendChild(elem.$);
+                append: function(elem, position) {
+                    switch(position) {
+                        case 'before':
+                            if(o.parentNode)
+                                o.parentNode.insertBefore(elem.$, o);
+                            break;
+                        case 'after':
+                            if(o.parentNode) {
+                                if(o.parentNode.lastChild == o){
+                                    o.parentNode.appendChild(elem.$);
+                                }else{
+                                    o.parentNode.insertBefore(elem.$, o.nextSibling);
+                                }
+                            }
+                            break;
+                        default:
+                            o.appendChild(elem.$);
+                    }
                     return _;
                 },
                 remove: function() {
-                    o.parentNode.removeChild(o);
+                    if (o.parentNode)
+                        o.parentNode.removeChild(o);
                     return _;
                 }
             }

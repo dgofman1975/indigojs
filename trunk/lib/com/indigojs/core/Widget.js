@@ -1,11 +1,8 @@
 /**
  *
- * Copyright © 2013 Softigent Inc. All rights reserved.
+ * Copyright © 2013 Softigent Inc..
  *
- *   Permission is granted to copy, and distribute verbatim copies
- *   of this license document, but changing it is not allowed.
- *
- *   Author: David Gofman
+ * Author: David Gofman
  */
 
 register('com.indigojs.core::Widget', function(selector, name) {
@@ -53,14 +50,26 @@ register('com.indigojs.core::Widget', function(selector, name) {
             css: function(_, value) {
                 return _.$can.css(value);
             },
-            bind: function(type, listener) {
+            val: function(_, value) {
+                return _.$can.val(value);
+            },
+            attr: function(_, name, value) {
+                return _.$can.attr(name, value);
+            },
+            html: function(_, value) {
+                return _.$can.html(value);
+            },
+            text: function(_, value) {
+                return _.$can.text(value);
+            },
+            bind: function(_, type, listener) {
                 return _.$can.bind(type, listener);
             },
-            unbind: function(type, listener) {
+            unbind: function(_, type, listener) {
                 return _.$can.unbind(type, listener);
             },
-            append: function(elem) {
-                return _.$can.append(elem);
+            append: function(_, elem, position) {
+                return _.$can.append(elem, position);
             },
             destroy: function(_) {
                 _.super();

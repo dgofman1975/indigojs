@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ComboBox.js</title>
+  <script type="text/javascript" src="../../../../vendor/jquery.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Loader.js"></script>
+  <script type="text/javascript">
+
+    Loader.import("com.indigojs.core.Assert",
+                  "com.indigojs.controls.ComboBox", function() {
+       $(document).ready(main);
+    });
+
+    function main() {
+        var options = [
+            {data:"opt1", label:"Option 1"},
+            {data:"opt2", label:"Option 2", selected:"selected"},
+            {data:"opt3", label:"Option 3"}
+        ];
+
+        new ComboBox("#combobox").options(options);
+
+        var combo = new ComboBox("#edit_combobox");
+        Assert.assertEquals(combo.constructor.className, "ComboBox", "Class name");
+        Assert.assertEquals(combo.constructor.package, "com.indigojs.controls", "Class package");
+
+        combo.options(options);
+        combo.changeEventHandler(function(event, target) {
+            console.info(combo.select().text(), event, target);
+        });
+
+        combo.select("opt3");
+        Assert.assertEquals(combo.select().val(), "opt3", "Select option");
+
+        Assert.assertEquals(combo.getOption("opt1").val(), "opt1", "Find option by data");
+    }
+  </script>
+</head>
+<body>
+    <select id="combobox" style="width:200px;">
+    </select>
+    <br/>
+    <select id="edit_combobox" style="width:200px;margin-top:10px">
+    </select>
+</body>
+</html>

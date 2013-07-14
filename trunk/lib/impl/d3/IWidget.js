@@ -1,11 +1,8 @@
 /**
  *
- * Copyright © 2013 Softigent Inc. All rights reserved.
+ * Copyright © 2013 Softigent Inc..
  *
- *   Permission is granted to copy, and distribute verbatim copies
- *   of this license document, but changing it is not allowed.
- *
- *   Author: David Gofman
+ * Author: David Gofman
  */
 
 register('impl.d3::IWidget', function() {
@@ -48,6 +45,18 @@ register('impl.d3::IWidget', function() {
                 css: function(value) {
                     return typeof(value) == 'string' ? o.style(value) : !o.style(value) || _;
                 },
+                val: function(value) {
+                    return undef(value) ? o.node().value : !(o.node().value = value) || _;
+                },
+                attr: function(name, value) {
+                    return undef(value) ? o.attr(name) : !o.attr(name, value) || _;
+                },
+                html: function(value) {
+                    return undef(value) ? o.html() : !o.html(value) || _;
+                },
+                text: function(value) {
+                    return undef(value) ? o.text() : !o.text(value) || _;
+                },
                 bind: function(type, listener) {
                     return !o.on(type, function() {
                         listener(d3.event);
@@ -56,8 +65,24 @@ register('impl.d3::IWidget', function() {
                 unbind: function(type, listener) {
                     return !o.on(type, null) || _;
                 },
-                append: function(elem) {
-                    o.node().appendChild(elem.$.node());
+                append: function(elem, position) {
+                    switch(position) {
+                        case 'before':
+                            if(o.node().parentNode)
+                                o.node().parentNode.insertBefore(elem.$.node(), o.node());
+                            break;
+                        case 'after':
+                            if(o.node().parentNode) {
+                                if(o.node().parentNode.lastChild == o){
+                                    o.node().parentNode.appendChild(elem.$.node());
+                                }else{
+                                    o.node().parentNode.insertBefore(elem.$.node(), o.node().nextSibling);
+                                }
+                            }
+                            break;
+                        default:
+                            o.node().appendChild(elem.$.node());
+                    }
                     return _;
                 },
                 remove: function() {
