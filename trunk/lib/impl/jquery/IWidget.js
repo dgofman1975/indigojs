@@ -24,7 +24,7 @@ register('impl.jquery::IWidget', function() {
                     return IWidget.find(selector, o);
                 },
                 offset: function() {
-                    return o.offset();
+                    return o[0].getBoundingClientRect();
                 },
                 x: function(value) {
                     return undef(value) ? o.position().left : !o.css('left', value) || _;
@@ -47,6 +47,12 @@ register('impl.jquery::IWidget', function() {
                 attr: function(name, value) {
                     return undef(value) ? o.attr(name) : !o.attr(name, value) || _;
                 },
+                wrap: function(elem) {
+                    //return !o.wrap(elem.$) || _; //bug http://bugs.jquery.com/ticket/14131
+                    if(o[0].parentNode)
+                       o[0].parentNode.insertBefore(elem.$[0], o[0]);
+                    elem.$[0].appendChild(o[0]);
+                },
                 html: function(value) {
                     return undef(value) ? o.html() : !o.html(value) || _;
                 },
@@ -58,6 +64,17 @@ register('impl.jquery::IWidget', function() {
                 },
                 unbind: function(type, listener) {
                     return !o.unbind(type, listener) || _;
+                },
+                dispatch: function(type, classType) {
+                    if (document.createEventObject) {
+                        var e = document.createEventObject();
+                        o[0].fireEvent('on' + type, e);
+                    } else {
+                        var e = document.createEvent(classType || 'HTMLEvents');
+                        e.initEvent(type, true, false);
+                        o[0].dispatchEvent(e);
+                    }
+                    return _;
                 },
                 append: function(elem, position) {
                     switch(position) {

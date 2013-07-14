@@ -24,8 +24,7 @@ register('impl.dojo::IWidget', function() {
                     return IWidget.find(selector, o);
                 },
                 offset: function() {
-                    var r = o.position()[0];
-                    return { top:r.y, left:r.x };
+                    return o[0].getBoundingClientRect();
                 },
                 x: function(value) {
                     return undef(value) ? o.coords()[0].l : !o.style('left', value) || _;
@@ -49,6 +48,11 @@ register('impl.dojo::IWidget', function() {
                 attr: function(name, value) {
                     return undef(value) ? o.attr(name) : !o.attr(name, value) || _;
                 },
+                wrap: function(elem) {
+                    if(o[0].parentNode)
+                       o[0].parentNode.insertBefore(elem.$[0], o[0]);
+                    elem.$[0].appendChild(o[0]);
+                },
                 html: function(value) {
                     return undef(value) ? o[0].innerHTML : !(o[0].innerHTML = value) || _;
                 },
@@ -68,6 +72,17 @@ register('impl.dojo::IWidget', function() {
                         o[0].detachEvent('on' + type, listener);
                     } else {
                         o[0].removeEventListener(type, listener);
+                    }
+                    return _;
+                },
+                dispatch: function(type, classType) {
+                    if (document.createEventObject) {
+                        var e = document.createEventObject();
+                        o[0].fireEvent('on' + type, e);
+                    } else {
+                        var e = document.createEvent(classType || 'HTMLEvents');
+                        e.initEvent(type, true, false);
+                        o[0].dispatchEvent(e);
                     }
                     return _;
                 },

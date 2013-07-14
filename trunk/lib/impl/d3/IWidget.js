@@ -27,8 +27,7 @@ register('impl.d3::IWidget', function() {
                     return IWidget.find(selector, o);
                 },
                 offset: function() {
-                    var r = o.node().getBoundingClientRect();
-                    return { top:r.top, left:r.left };
+                    return o.node().getBoundingClientRect();
                 },
                 x: function(value) {
                     return undef(value) ? parseInt(o.style('left'), 10) : !o.style('left', value) || _;
@@ -51,6 +50,11 @@ register('impl.d3::IWidget', function() {
                 attr: function(name, value) {
                     return undef(value) ? o.attr(name) : !o.attr(name, value) || _;
                 },
+                wrap: function(elem) {
+                    if(o.node().parentNode)
+                       o.node().parentNode.insertBefore(elem.$.node(), o.node());
+                    elem.$.node().appendChild(o.node());
+                },
                 html: function(value) {
                     return undef(value) ? o.html() : !o.html(value) || _;
                 },
@@ -64,6 +68,17 @@ register('impl.d3::IWidget', function() {
                 },
                 unbind: function(type, listener) {
                     return !o.on(type, null) || _;
+                },
+                dispatch: function(type, classType) {
+                    if (document.createEventObject) {
+                        var e = document.createEventObject();
+                        o.node().fireEvent('on' + type, e);
+                    } else {
+                        var e = document.createEvent(classType || 'HTMLEvents');
+                        e.initEvent(type, true, false);
+                        o.node().dispatchEvent(e);
+                    }
+                    return _;
                 },
                 append: function(elem, position) {
                     switch(position) {

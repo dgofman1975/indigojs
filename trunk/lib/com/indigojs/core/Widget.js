@@ -56,6 +56,9 @@ register('com.indigojs.core::Widget', function(selector, name) {
             attr: function(_, name, value) {
                 return _.$can.attr(name, value);
             },
+            wrap: function(elem) {
+                return _.$can.wrap(elem);
+            },
             html: function(_, value) {
                 return _.$can.html(value);
             },
@@ -67,6 +70,9 @@ register('com.indigojs.core::Widget', function(selector, name) {
             },
             unbind: function(_, type, listener) {
                 return _.$can.unbind(type, listener);
+            },
+            dispatch: function(type, classType) {
+                return _.$can.dispatch(type, classType);
             },
             append: function(_, elem, position) {
                 return _.$can.append(elem, position);
