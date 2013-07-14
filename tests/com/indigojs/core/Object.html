@@ -19,6 +19,26 @@
             .final({
                 finalVar: "A::Final Variable"
             })
+            .property({
+                getterVar: ["A::Custom Getter", null,
+                    function(_) {
+                        return _ + " Variable";
+                }],
+
+                setterVar: ["A::Custom Setter",
+                    function(_, value) {
+                        return _ + value;
+                }],
+
+                setGetVar: ["A::Custom Setter/Getter",
+                    function(_, value) { //setter
+                        return value;
+                    }, function(_) { //getter
+                        return _ + " Variable";
+                } /*, null (optional) */],
+
+                propertyVar: "A::Property Variable"
+            })
         })
         .import("com.indigojs.core.Object")
         .extends("com.indigojs.core.Object", {
@@ -66,7 +86,15 @@
 
         Assert.console = function(message, state) {
             window.console[state || 'log'](message);
-            document.writeln('<pre style="color:' + (state == "error" ? "red" : "black") + '">' + message + '</pre>');
+            document.writeln('<pre style="color:' + (state == "error" ? "red" : state == "info" ? "blue" : "black") + '">' + message + '</pre>');
+        };
+
+        Indigo.callHook = function(inst, fName, args, count) {
+            Assert.console("(" + count + ") " + inst.getName() + "::" + fName + " - " + JSON.stringify(args), "log");
+        };
+
+        Indigo.propHook =  function(isSet, inst, propName, value, newValue) {
+            Assert.console(inst.getName() + "." + propName + ": " + value + (isSet ? "->" +  newValue : ''), "log");
         };
 
         Assert.assertEquals(A.staticVar, "A::Static Variable", "A::static value");
@@ -100,8 +128,24 @@
 
         a.finalVar = "A:Try to change a final value";
         b.finalVar = "B:Try to change a final value";
-        Assert.assertEquals(a.finalVar, "A::Final Variable", "A::getter value didn't change");
-        Assert.assertEquals(b.finalVar, "A::Final Variable", "B::getter value didn't change");
+        Assert.assertEquals(a.finalVar, "A::Final Variable", "A::final value shouldn't change");
+        Assert.assertEquals(b.finalVar, "A::Final Variable", "B::final value shouldn't change");
+
+        Assert.assertEquals(b.propertyVar, "A::Property Variable", "B::property value");
+        b.propertyVar = "B:New Property value";
+        Assert.assertEquals(b.propertyVar, "B:New Property value", "B::property value changed");
+
+        Assert.assertEquals(b.getterVar, "A::Custom Getter Variable", "B::getter value");
+        b.getterVar = "B:Try to change a getter value";
+        Assert.assertEquals(b.getterVar, "A::Custom Getter Variable", "B::getter value shouldn't change");
+
+        Assert.assertEquals(b.setterVar, "A::Custom Setter", "B::setter value");
+        b.setterVar = " Variable";
+        Assert.assertEquals(b.setterVar, "A::Custom Setter Variable", "B::setter value updated");
+
+        Assert.assertEquals(b.setGetVar, "A::Custom Setter/Getter Variable", "B::setter/getter value");
+        b.setGetVar = "A::NEW Custom Setter/Getter";
+        Assert.assertEquals(b.setGetVar, "A::NEW Custom Setter/Getter Variable", "B::setter/getter value updated");
 
         Assert.assertEquals(Indigo.uids().length, 2, "Created two instances");
 
