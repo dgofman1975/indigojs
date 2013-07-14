@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ColorPicker.js</title>
+  <link rel="stylesheet" href="../../../../styles/common.css" type="text/css"/>
+
+
+  <script type="text/javascript" src="../../../../vendor/jquery.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js" lang="jquery"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Loader.js"></script>
+  <script type="text/javascript">
+
+    Loader.import("com.indigojs.core.Assert",
+                  "com.indigojs.controls.ColorPicker", function() {
+       $(document).ready(main);
+    });
+
+    function main() {
+        var picker = new ColorPicker();
+        Assert.assertEquals(picker.constructor.className, "ColorPicker", "Class name");
+        Assert.assertEquals(picker.constructor.package, "com.indigojs.controls", "Class package");
+
+        //compare conversion on http://www.javascripter.net/faq/rgb2hsv.htm
+        picker.clickHandler(function(hex, rgb, hsv) {
+                console.log("hex:", hex, ", rgb:", rgb, ", hsv:",
+                    {h:hsv.h.toFixed(1), s:hsv.s.toFixed(4), v:hsv.v.toFixed(4)});
+        });
+
+        picker.hex("#99c556");
+        Assert.assertEquals(JSON.stringify(picker.rgb()), JSON.stringify({r:153, g:197, b:86}), "HEX to RGB");
+        Assert.assertEquals(JSON.stringify(picker.hsv()),
+                JSON.stringify({h:83.78378378378379, s:0.5634517766497462, v:0.7725490196078432}), "HEX to HSV");
+
+        picker.rgb(153, 197, 86);
+        Assert.assertEquals(JSON.stringify(picker.hex()), "\"#99c556\"", "RGB to HEX");
+        Assert.assertEquals(JSON.stringify(picker.hsv()),
+                JSON.stringify({h:83.78378378378379, s:0.5634517766497462, v:0.7725490196078432}), "RGB to HSV");
+
+        picker.hsv(83.78378378378379, 0.5634517766497462, 0.7725490196078432);
+        Assert.assertEquals(JSON.stringify(picker.hex()), "\"#99c556\"", "HSV to HEX");
+        Assert.assertEquals(JSON.stringify(picker.rgb()), JSON.stringify({r:153, g:197, b:86}), "HSV to RGB");
+
+        IWidget.find("body").append(picker.container);
+    };
+  </script>
+</head>
+<body>
+    <p>Pick a color</p>
+</body>
+</html>

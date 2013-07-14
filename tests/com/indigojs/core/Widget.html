@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Widget.js</title>
+
+  <script type="text/javascript" src="../../../../vendor/jquery.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Assert.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Object.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Widget.js"></script>
+
+  <script type="text/javascript" src="../../../../lib/impl/native/IWidget.js"></script>
+
+  <script type="text/javascript">
+
+    $(document).ready(function(){
+        runTest();
+    });
+
+    function runTest() {
+        var widget = new Widget("#widget_div", "MyWidget");
+        Assert.assertEquals(widget.getName(), "MyWidget", "Widget name");
+        Assert.assertEquals(widget.constructor.className, "Widget", "Class name");
+        Assert.assertEquals(widget.constructor.package, "com.indigojs.core", "Package name");
+        widget.css({"margin":"40px"});
+        widget.move("10px", "20px").size("100px", "200px");
+        Assert.assertEquals(widget.offset().top, 60, "Widget offset top");
+        Assert.assertEquals(widget.offset().left, 50, "Widget offset left");
+        Assert.assertEquals(widget.x(), 10, "Widget x");
+        Assert.assertEquals(widget.y(), 20, "Widget y");
+        Assert.assertEquals(widget.width(), 100, "Widget width");
+        Assert.assertEquals(widget.height(), 200, "Widget height");
+        widget.css({"background":"green"});
+        Assert.assertEquals(widget.css("background-color"), "rgb(0, 128, 0)", "Widget background color");
+    };
+  </script>
+</head>
+<body>
+    <div id="widget_div" style="position:absolute; background-color:red">
+    </div>
+</body>
+</html>

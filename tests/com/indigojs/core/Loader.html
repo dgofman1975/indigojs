@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Loader.js</title>
+  <script type="text/javascript" src="../../../../vendor/jquery.js"></script>
+  <script type="text/javascript" src="../../../../vendor/d3.js"></script>
+  <script type="text/javascript" src="../../../../vendor/dojo.js"></script>
+
+  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js" lang="d3">
+        /*
+         * supporting "lang" attributes: "native", "jquery", "d3", "dojo"
+         */
+  </script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Loader.js"></script>
+  <script type="text/javascript">
+
+    Loader.import("com.indigojs.core.Assert",
+                  "com.indigojs.core.Utils",
+                  "com.indigojs.core.Widget", function() {
+       $(document).ready(main);
+    });
+
+    function main() {
+        var widget = new Widget("#widget_div");
+        widget.css({"margin":"40px"});
+        widget.move("10px", "20px").size("100px", "200px");
+        Assert.assertEquals(widget.offset().top, 60, "Widget offset top");
+        Assert.assertEquals(widget.offset().left, 50, "Widget offset left");
+        Assert.assertEquals(widget.x(), 10, "Widget x");
+        Assert.assertEquals(widget.y(), 20, "Widget y");
+        Assert.assertEquals(widget.width(), 100, "Widget width");
+        Assert.assertEquals(widget.height(), 200, "Widget height");
+        widget.css({"background":"green"});
+        Assert.assertEquals(widget.css("background-color"), "rgb(0, 128, 0)", "Widget background color");
+        Assert.assertEquals(Loader.list().length, 5, "Loaded classes");
+        Utils.log(LOGALL, Loader.list());
+    }
+  </script>
+</head>
+<body>
+    <div id="widget_div" style="position:absolute; background-color:red">
+    </div>
+</body>
+</html>
