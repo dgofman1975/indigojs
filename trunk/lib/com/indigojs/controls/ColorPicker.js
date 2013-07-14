@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2013 Softigent Inc.. All rights reserved.
+ * Copyright © 2013 Softigent Inc. All rights reserved.
  *
  *   Permission is granted to copy, and distribute verbatim copies
  *   of this license document, but changing it is not allowed.
