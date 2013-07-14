@@ -24,13 +24,13 @@
         Assert.assertEquals(widget.constructor.className, "Widget", "Class name");
         Assert.assertEquals(widget.constructor.package, "com.indigojs.core", "Package name");
         widget.css({"margin":"40px", "padding":"5px"});
-        widget.move("10px", "20px").size("500px", "200px");
+        widget.move("10px", "20px").size("500px", "250px");
         Assert.assertEquals(widget.offset().top, 60, "Widget offset top");
         Assert.assertEquals(widget.offset().left, 50, "Widget offset left");
         Assert.assertEquals(widget.x(), 10, "Widget x");
         Assert.assertEquals(widget.y(), 20, "Widget y");
         Assert.assertEquals(widget.width(), 500, "Widget width");
-        Assert.assertEquals(widget.height(), 200, "Widget height");
+        Assert.assertEquals(widget.height(), 250, "Widget height");
         widget.css({"background":"green"});
         Assert.assertEquals(widget.css("background-color"), "rgb(0, 128, 0)", "Widget background color");
         widget.attr("myattr", "myval");
@@ -44,9 +44,14 @@
         Assert.assertEquals(input.val(), "Type here...", "Input value");
         widget.append(input);
 
+        var div = IWidget.create("<div>DIV</div>");
+        widget.append(div);
         widget.append(IWidget.create("<p>LAST</p>"));
-        input.append(IWidget.create("<p>BEFORE</p>"), "before");
-        input.append(IWidget.create("<p>AFTER</p>"), "after");
+
+        var span = IWidget.create("<span style='color:red'>");
+        div.wrap(span);
+        span.append(IWidget.create("<p>BEFORE</p>"), "before");
+        span.append(IWidget.create("<p>AFTER</p>"), "after");
     };
   </script>
 </head>

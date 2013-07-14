@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>EditableComboBox.js</title>
+  <script type="text/javascript" src="../../../../vendor/jquery.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js" lang="jquery"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Loader.js"></script>
+  <script type="text/javascript">
+
+    Loader.import("com.indigojs.core.Assert",
+                  "com.indigojs.controls.EditableComboBox", function() {
+       $(document).ready(main);
+    });
+
+    function main() {
+        var options = [
+            {data:"opt1", label:"Option 1"},
+            {data:"opt2", label:"Option 2", selected:"selected"},
+            {data:"opt3", label:"Option 3"}
+        ];
+
+        new ComboBox("#combobox").options(options);
+
+        var combo = new EditableComboBox("#edit_combobox");
+        Assert.assertEquals(combo.constructor.className, "EditableComboBox", "Class name");
+        Assert.assertEquals(combo.constructor.package, "com.indigojs.controls", "Class package");
+
+        combo.options(options);
+        combo.changeEventHandler(function(event, target) {
+            console.info(combo.select().text(), event.type, target.$);
+        });
+
+        Assert.assertEquals(combo.editable(), true, "ComboBox is editable");
+
+        combo.select("opt3");
+        Assert.assertEquals(combo.select().val(), "opt3", "Select option");
+
+        Assert.assertEquals(combo.value(), "opt3", "Input value");
+        Assert.assertEquals(combo.text(), "Option 3", "Input text");
+
+        combo.value("opt");
+        Assert.assertEquals(combo.value(), "opt", "Input custom value");
+
+        combo.text("My Option");
+        Assert.assertEquals(combo.text(), "My Option", "Input custom text");
+
+        Assert.assertEquals(combo.getOption("opt1").val(), "opt1", "Find option by data");
+    }
+  </script>
+</head>
+<body>
+    <select id="combobox" style="width:200px;">
+    </select>
+    <br/>
+    <select id="edit_combobox" style="width:200px;margin-top:10px">
+    </select>
+</body>
+</html>
