@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MenuBar.js</title>
+  <style>
+      .menu1Icon {
+          background:url("http://icons.iconarchive.com/icons/iconshock/super-vista-general/16/home-icon.png");
+          float: left;
+          width: 16px;
+          height: 16px;
+          margin: 2px 5px 0 0;
+      }
+      .menu2Icon {
+          background:url("http://icons.iconarchive.com/icons/juliewiens/christmas/16/bell-icon.png");
+          float: right;
+          width: 16px;
+          height: 16px;
+          margin: 2px 0 0 5px;
+      }
+  </style>
+  <link rel="stylesheet" href="../../../../styles/common.css" type="text/css"/>
+  <script type="text/javascript" src="../../../../vendor/jquery.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js" lang="@LANG@"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Loader.js"></script>
+  <script type="text/javascript">
+
+    Loader.import("com.indigojs.core.Assert",
+                  "com.indigojs.controls.MenuBar", function() {
+        $(document).ready(main);
+    });
+
+    function main() {
+        var menubar = new MenuBar("#menubar_div");
+        Assert.assertEquals(menubar.constructor.className, "MenuBar", "Class name");
+        Assert.assertEquals(menubar.constructor.package, "com.indigojs.controls", "Class package");
+
+        var item = MenuBar.createItem("menu1", "Menu 1", "menu1Icon");
+        Assert.assertEquals(item.data, "menu1", "Menu data");
+        Assert.assertEquals(item.label, "Menu 1", "Menu label");
+        Assert.assertEquals(item.icon, "menu1Icon", "Menu icon");
+
+        var items = [item].concat([
+            {data:"menu2", label:"Menu 2", icon:"menu2Icon", children:[
+                {data:"submenu2-1", label:"Sub Menu 2-1"},
+                {data:"submenu2-2", label:"Sub Menu 2-2", hide:true},
+                {data:"submenu2-3", label:"Sub Menu 2-3"}
+                ]},
+            {data:"menu3", label:"Menu 3", children:[
+                {data:"submenu3-1", label:"Sub Menu 3-1"},
+                {data:"submenu3-2", label:"Sub Menu 3-2"},
+                {data:"submenu3-3", label:"Sub Menu 3-3"}
+                ]},
+        ]);
+        menubar.items(items);
+
+       item = menubar.selectedItem("submenu2-3");
+       Assert.assertEquals(item.label, "Sub Menu 2-3", "Sub Menu 2-3 label");
+       Assert.assertEquals(menubar.selectedIndex(), 4, "Sub Menu 2-3 index");
+
+       item = menubar.selectedIndex(6);
+       Assert.assertEquals(item.data, "submenu3-1", "Sub Menu 3-1 data");
+
+       item = menubar.getItemByData("menu1");
+       Assert.assertEquals(item.index, 0, "Menu 1 index");
+
+       item = menubar.getItemByIndex(0);
+       Assert.assertEquals(item.data, "menu1", "Menu 1 data");
+
+       menubar.itemClickEventHandler(function(item, li){
+           console.log(item, li);
+       });
+    }
+  </script>
+</head>
+<body>
+    <div id="menubar_div">
+    </div>
+</body>
+</html>

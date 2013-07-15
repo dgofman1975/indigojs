@@ -14,11 +14,9 @@
 
   <script type="text/javascript">
 
-    $(document).ready(function(){
-        runTest();
-    });
+    $(document).ready(main);
 
-    function runTest() {
+    function main() {
         var widget = new Widget("#widget_div", "MyWidget");
         Assert.assertEquals(widget.getName(), "MyWidget", "Widget name");
         Assert.assertEquals(widget.constructor.className, "Widget", "Class name");
@@ -31,10 +29,20 @@
         Assert.assertEquals(widget.y(), 20, "Widget y");
         Assert.assertEquals(widget.width(), 500, "Widget width");
         Assert.assertEquals(widget.height(), 250, "Widget height");
+        widget.classed("class1");
+        widget.classed("class2");
+        Assert.assertEquals(widget.attr("class"), "class1 class2", "Widget classes");
+        widget.classed("class1", null);
+        Assert.assertEquals(widget.attr("class"), "class2", "Widget new classes");
         widget.css({"background":"green"});
         Assert.assertEquals(widget.css("background-color"), "rgb(0, 128, 0)", "Widget background color");
-        widget.attr("myattr", "myval");
-        Assert.assertEquals(widget.attr("myattr"), "myval", "Widget get attribute");
+        widget.attr("myattr1", "myval1");
+        widget.attr("myattr2", "myval2");
+        Assert.assertEquals(widget.attr("myattr1"), "myval1", "Widget get attribute 1");
+        Assert.assertEquals(widget.attr("myattr2"), "myval2", "Widget get attribute 2");
+        widget.attr("myattr2", null);
+        Assert.assertTrue(widget.attr("myattr2") != "myval2", "Widget attribute 2 removed");
+
         widget.html("<p>Hello World!</p>");
         Assert.assertEquals(widget.html(), "<p>Hello World!</p>", "Widget get html");
         Assert.assertEquals(widget.text(), "Hello World!", "Widget get text");
