@@ -4,10 +4,7 @@
   <meta charset="utf-8">
   <title>Loader.js</title>
   <script type="text/javascript" src="../../../../vendor/jquery.js"></script>
-  <script type="text/javascript" src="../../../../vendor/d3.js"></script>
-  <script type="text/javascript" src="../../../../vendor/dojo.js"></script>
-
-  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js" lang="jquery">
+  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js" lang="d3">
         /*
          * supporting "lang" attributes: "native", "jquery", "d3", "dojo"
          */
@@ -22,19 +19,32 @@
     });
 
     function main() {
-        var widget = new Widget("#widget_div");
+        var widget = new Widget("#widget_div", "MyWidget");
+        Assert.assertEquals(widget.getName(), "MyWidget", "Widget name");
+        Assert.assertEquals(widget.constructor.className, "Widget", "Class name");
+        Assert.assertEquals(widget.constructor.package, "com.indigojs.core", "Package name");
         widget.css({"margin":"40px", "padding":"5px"});
-       widget.move("10px", "20px").size("500px", "250px");
+        widget.move("10px", "20px").size("500px", "250px");
         Assert.assertEquals(widget.offset().top, 60, "Widget offset top");
         Assert.assertEquals(widget.offset().left, 50, "Widget offset left");
         Assert.assertEquals(widget.x(), 10, "Widget x");
         Assert.assertEquals(widget.y(), 20, "Widget y");
         Assert.assertEquals(widget.width(), 500, "Widget width");
         Assert.assertEquals(widget.height(), 250, "Widget height");
+        widget.classed("class1");
+        widget.classed("class2");
+        Assert.assertEquals(widget.attr("class"), "class1 class2", "Widget classes");
+        widget.classed("class1", null);
+        Assert.assertEquals(widget.attr("class"), "class2", "Widget new classes");
         widget.css({"background":"green"});
         Assert.assertEquals(widget.css("background-color"), "rgb(0, 128, 0)", "Widget background color");
-        widget.attr("myattr", "myval");
-        Assert.assertEquals(widget.attr("myattr"), "myval", "Widget get attribute");
+        widget.attr("myattr1", "myval1");
+        widget.attr("myattr2", "myval2");
+        Assert.assertEquals(widget.attr("myattr1"), "myval1", "Widget get attribute 1");
+        Assert.assertEquals(widget.attr("myattr2"), "myval2", "Widget get attribute 2");
+        widget.attr("myattr2", null);
+        Assert.assertTrue(widget.attr("myattr2") != "myval2", "Widget attribute 2 removed");
+
         widget.html("<p>Hello World!</p>");
         Assert.assertEquals(widget.html(), "<p>Hello World!</p>", "Widget get html");
         Assert.assertEquals(widget.text(), "Hello World!", "Widget get text");

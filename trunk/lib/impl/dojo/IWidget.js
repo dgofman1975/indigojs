@@ -9,13 +9,17 @@ register('impl.dojo::IWidget', function() {
 })
 .define({
     static: {
-        create: function(html, shim, ref) {
+        create: function(html, ref) {
             var o = dojo.query(dojo.create("div", { innerHTML:html }).firstChild);
-            return shim != false ? IWidget.shim(o, ref) : o;
+            return IWidget.shim(o, ref);
         },
-        find: function(selector, parent, shim, ref) {
-            var o =  (parent || dojo).query(selector);
-            return shim != false ? IWidget.shim(o, ref) : o;
+        //http://dojotoolkit.org/reference-guide/1.9/dojo/query.html#standard-css3-selectors
+        find: function(selector, parent, ref) {
+            if (selector.$) return selector;
+            return IWidget.shim(IWidget.findAll(selector, parent).at(0), ref);
+        },
+        findAll: function(selector, parent) {
+            return (parent || dojo).query(selector);
         },
         shim: function(o, _) {
             var apis = {
@@ -45,7 +49,14 @@ register('impl.dojo::IWidget', function() {
                 val: function(value) {
                     return undef(value) ? o[0].value : !(o[0].value = value) || _;
                 },
+                classed: function(name, value) {
+                    if (value === null)
+                        return !o.removeClass(name) || _;
+                    return !o.addClass(name) || _;
+                },
                 attr: function(name, value) {
+                    if (value === null)
+                        return !o.removeAttr(name) || _;
                     return undef(value) ? o.attr(name) : !o.attr(name, value) || _;
                 },
                 wrap: function(elem) {

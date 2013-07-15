@@ -9,7 +9,7 @@ register('com.indigojs.core::Widget', function(selector, name) {
     this.super(name)
 
     .final({
-        container: IWidget.find(selector, null, true, this)
+        container: IWidget.find(selector, null, this)
     })
     .protected({
         $can: this.container,
@@ -46,6 +46,9 @@ register('com.indigojs.core::Widget', function(selector, name) {
             },
             height: function(_, value) {
                 return _.$can.height(value);
+            },
+            classed: function(_, value, remove) {
+                return _.$can.classed(value, remove);
             },
             css: function(_, value) {
                 return _.$can.css(value);

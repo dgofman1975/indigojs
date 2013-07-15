@@ -39,7 +39,7 @@ register('com.indigojs.controls::ColorPicker', function(name) {
 
                 _.$sliderClickHandler = function(e, y) {
                     e.preventDefault();
-                    if (y === undefined) {
+                    if (undef(y)) {
                         y = e.pageY - _.$slider.offset().top;
                         if (Math.round(y) == _.$scursor.y()) {
                             return;

@@ -9,16 +9,20 @@ register('impl.d3::IWidget', function() {
 })
 .define({
     static: {
-        create: function(html, shim, ref) {
+        create: function(html, ref) {
             var o, div = document.createElement('div');
             div.innerHTML = html;
             o = d3.select(div.firstChild);
             div.textContent = '';
-            return shim != false ? IWidget.shim(o, ref) : o;
+            return IWidget.shim(o, ref);
         },
-        find: function(selector, parent, shim, ref) {
+        find: function(selector, parent, ref) {
+            if (selector.$) return selector;
             var o = selector instanceof Array ? selector : (parent || d3).select(selector);
-            return shim != false ? IWidget.shim(o, ref) : o;
+            return IWidget.shim(o, ref);
+        },
+        findAll: function(selector, parent) {
+            return selector instanceof Array ? selector : (parent || d3).selectAll(selector);
         },
         shim: function(o, _) {
             var apis = {
@@ -47,7 +51,12 @@ register('impl.d3::IWidget', function() {
                 val: function(value) {
                     return undef(value) ? o.node().value : !(o.node().value = value) || _;
                 },
+                classed: function(name, value) {
+                    return !o.classed(name, value !== null) || _;
+                },
                 attr: function(name, value) {
+                    if (value === null)
+                        return !o.attr(name, null) || _;
                     return undef(value) ? o.attr(name) : !o.attr(name, value) || _;
                 },
                 wrap: function(elem) {

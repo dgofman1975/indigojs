@@ -9,16 +9,21 @@ register('impl.native::IWidget', function() {
 })
 .define({
     static: {
-        create: function(html, shim, ref) {
+        create: function(html, ref) {
             var o, div = document.createElement('div');
             div.innerHTML = html;
             o = div.firstChild;
             div.textContent = '';
-            return shim != false ? IWidget.shim(o, ref) : o;
+            return IWidget.shim(o, ref);
         },
-        find: function(selector, parent, shim, ref) {
-            var o = typeof(selector) == 'string' ? (parent || document).querySelector(selector) : selector;
-            return shim != false ? IWidget.shim(o, ref) : o;
+        find: function(selector, parent, ref) {
+            if (selector.$) return selector;
+            return IWidget.shim(IWidget.findAll(selector, parent)[0], ref);
+        },
+        findAll: function(selector, parent) {
+            try {
+                return typeof(selector) == 'string' ? (parent || document).querySelectorAll(selector) : selector;
+            }catch(e) { throw new Error("Invalid selector: " + selector, e)}
         },
         shim: function(o, _) {
             var apis = {
@@ -51,7 +56,19 @@ register('impl.native::IWidget', function() {
                 val: function(value) {
                     return undef(value) ? o.value : !(o.value = value)|| _;
                 },
+                classed: function(name, value) {
+                    if (value === null) {
+                        o.className = o.className.replace(new RegExp(name,'g'), '');
+                    } else {
+                        if (o.className.indexOf(name) == -1)
+                            o.className += ' ' + name;
+                    }
+                    o.className = o.className.replace(/^\s+|\s+$/g, '');
+                    return _;
+                },
                 attr: function(name, value) {
+                    if (value === null)
+                        return !o.removeAttribute(name) || _;
                     return undef(value) ? o.getAttribute(name) : !o.setAttribute(name, value) || _;
                 },
                 wrap: function(elem) {
@@ -60,10 +77,10 @@ register('impl.native::IWidget', function() {
                     elem.$.appendChild(o);
                 },
                 html: function(value) {
-                    return undef(value) ? o.innerHTML : !(o.innerHTML = value) || _;
+                    return undef(value) ? o.innerHTML : (o.innerHTML = value) != value || _;
                 },
                 text: function(value) {
-                    return undef(value) ? o.textContent : !(o.textContent = value) || _;
+                    return undef(value) ? o.textContent : (o.textContent = value) != value || _;
                 },
                 bind: function(type, listener) {
                     if (o.attachEvent) {
