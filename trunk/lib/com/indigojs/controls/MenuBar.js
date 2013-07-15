@@ -88,19 +88,19 @@ register('com.indigojs.controls::MenuBar', function(selector, name) {
                         if (self.selectedIndex() != index) {
                             _.$itemClickEventHandler(_.$menuItems[index], $(e.currentTarget));
                             _.selectedIndex(index);
-                            _.$menuLI.find('ul').css('visibility', 'hidden');
+                            _.$menuLI.find('ul').css({'visibility':'hidden'});
                         }
                     }
                 };
 
                 var onOpenSubMenuHandler = function(e) {
                     e.preventDefault();
-                    self.menubar.find(e.currentTarget).find('ul').css('visibility', 'visible');
+                    _.menubar.find(e.currentTarget).findAll('ul').css({'visibility':'visible'});
                 };
 
                 var onCloseSubMenuHandler = function(e) {
                     e.preventDefault();
-                    self.menubar.find(e.currentTarget).find('ul').css('visibility', 'hidden');
+                    _.menubar.find(e.currentTarget).find('ul').css({'visibility':'hidden'});
                 };
 
                 _.menubar.find('li')
@@ -135,9 +135,9 @@ register('com.indigojs.controls::MenuBar', function(selector, name) {
                 // Un-select previous menu
                 var selectedItem = _.$selectedItem;
                 if (selectedItem != null) {
-                    _.menubar.find('li[data="' + selectedItem.data + '"]').find('span:first-child').removeClass('menuSelected');
+                    _.menubar.find('li[data="' + selectedItem.data + '"]').find('span:first-child').classed('menuSelected', null);
                     if (selectedItem.parent != null)
-                        _.menubar.find('li[data="' + selectedItem.parent.data + '"]').find('span:first-child').removeClass('menuSelected');
+                        _.menubar.find('li[data="' + selectedItem.parent.data + '"]').find('span:first-child').classed('menuSelected', null);
                 }
 
                 if (_.$menuItems[index] != null) {
@@ -145,9 +145,9 @@ register('com.indigojs.controls::MenuBar', function(selector, name) {
                     _.$selectedIndex = index;
 
                     if (selectedItem.selectable == true)
-                        _.menubar.find('li[data="' + selectedItem.data + '"]').find('span:first-child').addClass('menuSelected');
+                        _.menubar.find('li[data="' + selectedItem.data + '"]').find('span:first-child').classed('menuSelected');
                     if (selectedItem.parent != null && selectedItem.parent.selectable == true)
-                        _.menubar.find('li[data="' + selectedItem.parent.data + '"]').find('span:first-child').addClass('menuSelected');
+                        _.menubar.find('li[data="' + selectedItem.parent.data + '"]').find('span:first-child').classed('menuSelected');
                 } else {
                     selectedItem = null;
                     _.$selectedIndex = -1;
