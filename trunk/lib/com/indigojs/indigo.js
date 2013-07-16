@@ -118,22 +118,24 @@ Function.prototype.define = function(apis) {
     this.prototype.constructor = this;
     classAPIs = publiAPIs = protectedAPIs = null; //clear memory
 
-    this.prototype.super = function() {
+    this.prototype.$super = function() {
         var _, inner = Indigo.inner,
             instances = inner.instances;
         if (undef(this.uid)) {
             var uid = inner.genUUID();
             var _ = instances[uid] = Object.create(this);
             // reserved keywords:
-            // me, parent, super, callLater, public, protected,
+            // me, parent, $super, callLater, public, protected,
             // final, property, __me__, __fn__, __ci__)
             _.me = this;
-            _.super = function() {
+            _.$super = function() {
                 var f, parent = this.parent;
-                parent = parent || this.me.constructor.parent;
-                if (parent && (f = parent.prototype[_.__fn__])) {
-                    this.parent = parent.parent;
-                    f.apply(this, arguments);
+                if (parent !== undefined) {
+                    parent = parent || this.me.constructor.parent;
+                    if (parent && parent != this && (f = parent.prototype[_.__fn__])) {
+                        this.parent = parent.parent || undefined;
+                        f.apply(this, arguments);
+                    }
                 }
                 this.parent = null; //delete temp variable
                 return this;
@@ -157,6 +159,7 @@ Function.prototype.define = function(apis) {
                 return this;
             };
             _.property = function(_) {
+                /*DEBUG*/ if (Object.customAPI) console.warn('Properties API may not workig correctly')
                 for (var name in _) {
                     var a = _[name],
                         t = typeof(a) == 'string';
@@ -208,7 +211,7 @@ Function.prototype.define = function(apis) {
     return this;
 };
 
-Function.prototype.extends = function(superClass, apis) {
+Function.prototype.$extends = function(superClass, apis) {
     try {
         this.parent = eval(superClass);
         if (this.parent) {
@@ -221,7 +224,40 @@ Function.prototype.extends = function(superClass, apis) {
 };
 
 // See Loader.js
-Function.prototype.import =
-Function.prototype.implements = function() {
+Function.prototype.$import =
+Function.prototype.$implements = function() {
     return this;
 };
+
+// for old browsers
+if (!(Object.create instanceof Function)) {
+    Object.customAPI = true;
+
+    Object.create = (function(){
+        function F(props){
+            for (var name in props)
+                this[name] = props[name].value;
+        };
+
+        return function(o, props){
+            F.prototype = o;
+            return new F(props)
+        };
+    })();
+
+    Object.defineProperty = function(o, name, props) {
+        if (props.get instanceof Function)
+            o[name] = props.get.call(o);
+    };
+
+    Object.getOwnPropertyDescriptor = function(o, name) {
+        return { get: function() { return o[name]; }};
+    };
+
+    Object.getOwnPropertyNames = Object.keys = function(o) {
+        var names = [];
+        for (var n in o)
+            names.push(n);
+        return names;
+    };
+}

@@ -8,7 +8,7 @@
   <script type="text/javascript" src="../../../../lib/com/indigojs/core/Object.js"></script>
   <script type="text/javascript">
         register("my.package::A", function(name) {
-            this.super(name)
+            this.$super(name)
 
             .protected({
                 protectedVar: "A::Protected Variable",
@@ -40,8 +40,8 @@
                 propertyVar: "A::Property Variable"
             })
         })
-        .import("com.indigojs.core.Object")
-        .extends("com.indigojs.core.Object", {
+        .$import("com.indigojs.core.Object")
+        .$extends("com.indigojs.core.Object", {
                static: {
                     staticVar: "A::Static Variable"
                 },
@@ -57,7 +57,7 @@
                         return _.me;
                     },
                     destroy: function(_) {
-                        return _.super();
+                        return _.$super();
                     },
                     getProtectedVar: function(_) {
                         return _.protectedVar;
@@ -68,15 +68,15 @@
 
         //Test inheritance
         register("my.package::B", function(name) {
-            this.super(name)
+            this.$super(name)
         })
-        .extends("my.package.A", {
+        .$extends("my.package.A", {
                 static: {
                     staticVar: "B::Static Variable"
                 },
                 public: {
                     publicFunc: function(_, value1, value2) {
-                        _.super(value1);
+                        _.$super(value1);
                         _.setProtectedVar(value2); //call protected function
                         return _.me;
                     }

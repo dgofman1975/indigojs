@@ -6,19 +6,19 @@
  */
 
 register('com.indigojs.core::Widget', function(selector, name) {
-    this.super(name)
+    var _ = this.$super(name)
 
-    .final({
-        container: IWidget.find(selector, null, this)
+    _.final({
+        container: IWidget.find(selector, null, _)
     })
     .protected({
-        $can: this.container,
+        $can: _.container,
         $selector: selector
     });
 })
-.import('com.indigojs.core.Object')
-.implements('IWidget')
-.extends('com.indigojs.core.Object', {
+.$import('com.indigojs.core.Object')
+.$implements('IWidget')
+.$extends('com.indigojs.core.Object', {
         protected: {
             redraw: function(_) {
                 return _.me;
@@ -81,7 +81,7 @@ register('com.indigojs.core::Widget', function(selector, name) {
                 return _.$can.append(elem, position);
             },
             destroy: function(_) {
-                _.super();
+                _.$super();
                 return _.$can.remove();
             }
         }

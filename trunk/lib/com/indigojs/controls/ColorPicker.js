@@ -6,7 +6,7 @@
  */
 
 register('com.indigojs.controls::ColorPicker', function(name) {
-    this.super(IWidget.create('<div class="color-picker">' +
+    this.$super(IWidget.create('<div class="color-picker">' +
                               '  <div class="pallete" style="height: 100px; width: 180px;">'   +
                               '    <div class="cursor"></div>' +
                               '  </div>' +
@@ -26,7 +26,7 @@ register('com.indigojs.controls::ColorPicker', function(name) {
     })
     .callLater('init');
 })
-.extends('com.indigojs.core.Widget', {
+.$extends('com.indigojs.core.Widget', {
         protected: {
             init: function(_) {
                 var body = IWidget.find('body');
@@ -38,7 +38,7 @@ register('com.indigojs.controls::ColorPicker', function(name) {
                 _.$pcursor = _.$pallete.find('.cursor');
 
                 _.$sliderClickHandler = function(e, y) {
-                    e.preventDefault();
+                    e.preventDefault && e.preventDefault();
                     if (undef(y)) {
                         y = e.pageY - _.$slider.offset().top;
                         if (Math.round(y) == _.$scursor.y()) {
@@ -51,7 +51,7 @@ register('com.indigojs.controls::ColorPicker', function(name) {
                 };
 
                 _.$palleteClickHandler = function(e) {
-                    e.preventDefault();
+                    e.preventDefault && e.preventDefault();
 
                     var x = e.clientX - _.$pallete.offset().left;
                     var y = e.clientY - _.$pallete.offset().top;
@@ -73,7 +73,7 @@ register('com.indigojs.controls::ColorPicker', function(name) {
                    _.$slider.unbind('mousemove', e1);
 
                     _.$slider.bind('mousemove', e1 = function(e) {
-                        _.$scursor.y(Math.min(_.$slider.height(), Math.max(0, e.pageY - _.$slider.offset().top)) + 'px');
+                        _.$scursor.y(Math.min(_.$slider.height(), Math.max(0, e.clientY - _.$slider.offset().top)) + 'px');
                     });
 
                     body.bind('mouseup', e2 = function(e) {
@@ -130,7 +130,7 @@ register('com.indigojs.controls::ColorPicker', function(name) {
                     (rgb.b > 9 ? '' : '0') + rgb.b.toString(16);
             },
             redraw: function(_) {
-                _.super();
+                _.$super();
 
                 var mix = _.mixHSV(_.$hsv.h / 60, _.$hsv.s, 1);
                 var sliders = _.$sliders;

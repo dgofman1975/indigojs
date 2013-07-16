@@ -18,7 +18,7 @@ register('com.indigojs.core::Loader', function() {
         list: function() {
             return Object.keys(Loader.classMap);
         },
-        import: function() {
+        include: function() {
             var Loader = com.indigojs.core.Loader,
                 callBack = null, length = arguments.length;
 
@@ -63,21 +63,15 @@ register('com.indigojs.core::Loader', function() {
             script.setAttribute('type', 'text/javascript');
             script.src = src;
 
-            var loadHandler = function() {
-                if (script.detachEvent) {
-                    script.detachEvent('onreadystatechange', loadHandler);
-                } else {
-                    script.removeEventListener('load', loadHandler);
+            var done = false;
+            script.onload = script.onreadystatechange = function() {
+                if ( !done && (!this.readyState ||
+                        this.readyState === "loaded" || this.readyState === "complete") ) {
+                    done = true;
+                    script.onload = script.onreadystatechange = null;
+                    _.ready(cls, listeners);
                 }
-                _.ready(cls, listeners);
             };
-
-            if (script.attachEvent) {
-                script.attachEvent('onreadystatechange', loadHandler);
-            } else {
-                script.addEventListener('load', loadHandler);
-            }
-
             document.getElementsByTagName('head')[0].appendChild(script);
         },
         ready: function(_, cls, listeners) {
@@ -93,14 +87,14 @@ register('com.indigojs.core::Loader', function() {
             for (var i = 0; i < classes.length; i++) {
                 var cls = classes[i];
                 if (undef(map[cls]))
-                    map[cls] = {listeners:[], import:0, implements:0, ready:false};
+                    map[cls] = {listeners:[], count1:0, count2:0, ready:false};
             }
 
             var complete = function(cls) {
                 for (var i = 0; i < classes.length; i++) {
                     var o = map[classes[i]];
 
-                    if(!o.ready || o.import || o.implements)
+                    if(!o.ready || o.count1 || o.count2)
                         return;
                 }
                 if(callBack instanceof Function)
@@ -132,39 +126,39 @@ var loaderComplete = function(me, args, prop) {
     args.push(
         function() {
             map[prop]--;
-            if (!map.import && !map.implements) {
+            if (!map.count1 && !map.count2) {
                 var ci = me.__ci__;
                 delete me.__ci__;
                 if (ci instanceof Array)
-                    me.extends.apply(me, ci);
+                    me.$extends.apply(me, ci);
 
                 for(var i = 0; i < map.listeners.length; i++)
                     map.listeners[i].call(me, cls);
             }
         }
     );
-    Loader.import.apply(me, args);
+    Loader.include.apply(me, args);
     return me;
 };
 
-Loader.extends = Function.prototype.extends; //save Indigo.js implementation
-Function.prototype.extends = function(superClass, apis) {
+Loader.$extends = Function.prototype.$extends; //save Indigo.js implementation
+Function.prototype.$extends = function(superClass, apis) {
     if (undef(Loader.classMap[superClass])) {
         try {
             eval(superClass);
         }catch(e) {}
-        this.import(superClass);
+        this.$import(superClass);
     }
-    Loader.extends.apply(this, [superClass, apis]);
+    Loader.$extends.apply(this, [superClass, apis]);
 };
 
-Function.prototype.import = function() {
-    return loaderComplete(this, [].slice.call(arguments), 'import');
+Function.prototype.$import = function() {
+    return loaderComplete(this, [].slice.call(arguments), 'count1');
 };
 
-Function.prototype.implements = function() {
+Function.prototype.$implements = function() {
     var args = [].slice.call(arguments);
     for(var i = 0; i < args.length; i++)
         args[i] = 'impl.' + Loader.lang + '.' + args[i];
-    return loaderComplete(this, args, 'implements');
+    return loaderComplete(this, args, 'count2');
 };
