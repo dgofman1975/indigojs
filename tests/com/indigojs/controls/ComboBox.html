@@ -3,15 +3,9 @@
 <head>
   <meta charset="utf-8">
   <title>ComboBox.js</title>
-  <script type="text/javascript" src="../../../../vendor/jquery.js"></script>
   <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js" lang="@LANG@"></script>
   <script type="text/javascript" src="../../../../lib/com/indigojs/core/Loader.js"></script>
   <script type="text/javascript">
-
-    Loader.import("com.indigojs.core.Assert",
-                  "com.indigojs.controls.ComboBox", function() {
-       $(document).ready(main);
-    });
 
     function main() {
         var options = [
@@ -35,6 +29,8 @@
         Assert.assertEquals(combo.select().val(), "opt3", "Select option");
 
         Assert.assertEquals(combo.getOption("opt1").val(), "opt1", "Find option by data");
+
+        Assert.console(Loader.list());
     }
   </script>
 </head>
@@ -45,4 +41,10 @@
     <select id="edit_combobox" style="width:200px;margin-top:10px">
     </select>
 </body>
+<script type="text/javascript">
+    Loader.include("com.indigojs.core.Assert",
+                  "com.indigojs.controls.ComboBox", function() {
+       main();
+    });
+</script>
 </html>

@@ -20,15 +20,9 @@
       }
   </style>
   <link rel="stylesheet" href="../../../../styles/common.css" type="text/css"/>
-  <script type="text/javascript" src="../../../../vendor/jquery.js"></script>
   <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js" lang="@LANG@"></script>
   <script type="text/javascript" src="../../../../lib/com/indigojs/core/Loader.js"></script>
   <script type="text/javascript">
-
-    Loader.import("com.indigojs.core.Assert",
-                  "com.indigojs.controls.MenuBar", function() {
-        $(document).ready(main);
-    });
 
     function main() {
         var menubar = new MenuBar("#menubar_div");
@@ -70,6 +64,8 @@
        menubar.itemClickEventHandler(function(item, li){
            console.log(item, li);
        });
+
+       Assert.console(Loader.list());
     }
   </script>
 </head>
@@ -77,4 +73,10 @@
     <div id="menubar_div">
     </div>
 </body>
+<script>
+    Loader.include("com.indigojs.core.Assert",
+                  "com.indigojs.controls.MenuBar", function() {
+        main();
+    });
+</script>
 </html>

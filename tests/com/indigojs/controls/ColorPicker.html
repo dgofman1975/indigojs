@@ -5,15 +5,9 @@
   <title>ColorPicker.js</title>
   <link rel="stylesheet" href="../../../../styles/common.css" type="text/css"/>
 
-  <script type="text/javascript" src="../../../../vendor/jquery.js"></script>
   <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js" lang="@LANG@"></script>
   <script type="text/javascript" src="../../../../lib/com/indigojs/core/Loader.js"></script>
   <script type="text/javascript">
-
-    Loader.import("com.indigojs.core.Assert",
-                  "com.indigojs.controls.ColorPicker", function() {
-       $(document).ready(main);
-    });
 
     function main() {
         var picker = new ColorPicker();
@@ -41,10 +35,18 @@
         Assert.assertEquals(JSON.stringify(picker.rgb()), JSON.stringify({r:153, g:197, b:86}), "HSV to RGB");
 
         IWidget.find("body").append(picker.container);
+
+        Assert.console(Loader.list());
     };
   </script>
 </head>
 <body>
     <p>Pick a color</p>
 </body>
+<script type="text/javascript">
+    Loader.include("com.indigojs.core.Assert",
+                  "com.indigojs.controls.ColorPicker", function() {
+       main();
+    });
+</script>
 </html>

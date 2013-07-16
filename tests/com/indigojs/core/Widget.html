@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <title>Widget.js</title>
 
-  <script type="text/javascript" src="../../../../vendor/jquery.js"></script>
   <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js"></script>
   <script type="text/javascript" src="../../../../lib/com/indigojs/core/Assert.js"></script>
   <script type="text/javascript" src="../../../../lib/com/indigojs/core/Object.js"></script>
@@ -13,8 +12,6 @@
   <script type="text/javascript" src="../../../../lib/impl/native/IWidget.js"></script>
 
   <script type="text/javascript">
-
-    $(document).ready(main);
 
     function main() {
         var widget = new Widget("#widget_div", "MyWidget");
@@ -67,4 +64,7 @@
     <div id="widget_div" style="position:absolute; background-color:red">
     </div>
 </body>
+<script type="text/javascript">
+    main();
+</script>
 </html>

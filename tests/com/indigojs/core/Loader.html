@@ -3,20 +3,13 @@
 <head>
   <meta charset="utf-8">
   <title>Loader.js</title>
-  <script type="text/javascript" src="../../../../vendor/jquery.js"></script>
-  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js" lang="jquery">
+  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js" lang="native">
         /*
          * supporting "lang" attributes: "native", "jquery", "d3", "dojo"
          */
   </script>
   <script type="text/javascript" src="../../../../lib/com/indigojs/core/Loader.js"></script>
   <script type="text/javascript">
-
-    Loader.import("com.indigojs.core.Assert",
-                  "com.indigojs.core.Utils",
-                  "com.indigojs.core.Widget", function() {
-       $(document).ready(main);
-    });
 
     function main() {
         var widget = new Widget("#widget_div", "MyWidget");
@@ -72,4 +65,11 @@
     <div id="widget_div" style="position:absolute; background-color:red">
     </div>
 </body>
+<script type="text/javascript">
+    Loader.include("com.indigojs.core.Assert",
+                  "com.indigojs.core.Utils",
+                  "com.indigojs.core.Widget", function() {
+       main();
+    });
+</script>
 </html>
