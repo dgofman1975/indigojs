@@ -128,8 +128,8 @@
 
         a.finalVar = "A:Try to change a final value";
         b.finalVar = "B:Try to change a final value";
-        Assert.assertNotEqual(a.finalVar, "A:Try to change a final value", "A::final value shouldn't change");
-        Assert.assertNotEqual(b.finalVar, "B:Try to change a final value", "B::final value shouldn't change");
+        Assert.assertEquals(a.finalVar, "A::Final Variable", "A::final value shouldn't change");
+        Assert.assertEquals(b.finalVar, "A::Final Variable", "B::final value shouldn't change");
 
         Assert.assertEquals(b.propertyVar, "A::Property Variable", "B::property value");
         b.propertyVar = "B:New Property value";
