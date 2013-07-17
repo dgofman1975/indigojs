@@ -24,7 +24,7 @@ register('com.indigojs.controls::ComboBox', function(selector, name) {
                 });
 
                 _.$changeEventHandler = function(event, target) {
-                    console.log(event.type, target);
+                    window.console && console.log(event.type, target);
                 };
             },
             redraw: function(_) {

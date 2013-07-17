@@ -13,15 +13,23 @@ register('com.indigojs.core::Assert', function() {
     static: {
         assertEquals: function(actual, expected, message) {
             var error = (actual != expected);
-            var str1 = (error ? (message != undefined ? message : 'failed') : 'okay');
-            var str2 = ' - Expected: ' + expected + (error ? ', Result: ' + actual : '');
-            Assert.console(str1 + str2, error ? 'error' : 'info');
+            if (arguments.length == 4) //error
+                 error = arguments[3];
+             var str1 = (error ? message || 'failed' : 'okay');
+             var str2 = ' - Expected: ' + expected + (error ? ', Result: ' + actual : '');
+             Assert.console(str1 + str2, error ? 'error' : 'info');
+        },
+        assertNotEqual: function(actual, expected, message) {
+            Assert.assertEquals(actual, expected, message, actual == expected);
         },
         assertTrue: function(actual, message) {
-            this.assertEquals(actual, true, message);
+            Assert.assertEquals(actual, true, message);
+        },
+        assertFalse: function(actual, message) {
+            Assert.assertEquals(actual, false, message);
         },
         console: function(msg, state) {
-            window.console[state || 'log'](msg);
+            window.console && console[state || 'log'](msg);
         }
     }
 });

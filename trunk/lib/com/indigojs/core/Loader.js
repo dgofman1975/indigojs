@@ -70,7 +70,7 @@ register('com.indigojs.core::Loader', function() {
                         this.readyState === 'loaded' || this.readyState === 'complete') ) {
                     done = true;
                     script.onload = script.onreadystatechange = null;
-                    /*DEBUG*/ console.info(cls + ' loaded...');
+                    /*DEBUG*/ window.console && console.info(cls + ' loaded...');
                     _.ready(cls, listeners);
                 }
             };

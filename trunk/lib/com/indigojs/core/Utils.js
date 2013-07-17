@@ -34,7 +34,7 @@ register('com.indigojs.core::Utils', function() {
             var args = [].slice.call(arguments);
             args.splice(0, 1);
             if (LOGLEVEL == LOGALL || level <= LOGLEVEL)
-                console.log(args.join(' '));
+                window.console && console.log(args.join(' '));
         }
     }
 })

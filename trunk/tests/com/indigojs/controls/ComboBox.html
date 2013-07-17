@@ -22,7 +22,7 @@
 
         combo.options(options);
         combo.changeEventHandler(function(event, target) {
-            console.info(combo.select().text(), event, target);
+            window.console && console.info(combo.select().text(), event, target);
         });
 
         combo.select("opt3");

@@ -161,7 +161,7 @@ Function.prototype.define = function(apis) {
                 return this;
             };
             _.property = function(_) {
-                /*DEBUG*/ if (Object.customAPI) console.warn('Properties API may not workig correctly')
+                /*DEBUG*/ if (Object.customAPI) window.console && console.warn('Properties API may not workig correctly')
                 for (var name in _) {
                     var a = _[name],
                         t = typeof(a) == 'string';

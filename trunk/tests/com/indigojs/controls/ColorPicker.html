@@ -16,7 +16,7 @@
 
         //compare conversion on http://www.javascripter.net/faq/rgb2hsv.htm
         picker.clickHandler(function(hex, rgb, hsv) {
-                console.log("hex:", hex, ", rgb:", rgb, ", hsv:",
+                window.console && console.log("hex:", hex, ", rgb:", rgb, ", hsv:",
                     {h:hsv.h.toFixed(1), s:hsv.s.toFixed(4), v:hsv.v.toFixed(4)});
         });
 
