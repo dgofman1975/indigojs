@@ -45,8 +45,10 @@ register('impl.dojo::IWidget', function() {
                     return undef(value) ? o.style('height')[0] : !o.style('height', value) || _;
                 },
                 css: function(value) {
+                    var cs = dojo.getComputedStyle(o[0]);
                     return typeof(value) == 'string' ?
-                        dojo.getComputedStyle(o[0]).getPropertyValue(value) : !o.style(value) || _;
+                            cs.getPropertyValue ? cs.getPropertyValue(value) :
+                            cs.getAttribute(value) /*IE8*/ : !o.style(value) || _;
                 },
                 val: function(value) {
                     return undef(value) ? o[0].value : !(o[0].value = value) || _;
@@ -62,9 +64,11 @@ register('impl.dojo::IWidget', function() {
                     return undef(value) ? o.attr(name) : !o.attr(name, value) || _;
                 },
                 wrap: function(elem) {
-                    if(o[0].parentNode)
-                       o[0].parentNode.insertBefore(elem.$[0], o[0]);
-                    elem.$[0].appendChild(o[0]);
+                    if (elem.$.length > 0) {
+                        if(o[0].parentNode)
+                           o[0].parentNode.insertBefore(elem.$[0], o[0]);
+                        elem.$[0].appendChild(o[0]);
+                    }
                     return _;
                 },
                 html: function(value) {

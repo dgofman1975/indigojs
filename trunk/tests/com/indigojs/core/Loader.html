@@ -55,12 +55,11 @@
         widget.append(div);
         widget.append(IWidget.create("<p>LAST</p>"));
 
-        var span = IWidget.create("<span style='color:red'>");
+        var span = IWidget.create("<span style='color:red'></span>");
         div.wrap(span);
         span.append(IWidget.create("<p>BEFORE</p>"), "before");
         span.append(IWidget.create("<p>AFTER</p>"), "after");
 
-        Assert.assertEquals(Loader.list().length, 5, "Loaded classes");
         Utils.log(LOGALL, Loader.list());
     }
   </script>
@@ -71,8 +70,8 @@
 </body>
 <script type="text/javascript">
     Loader.include("com.indigojs.core.Assert",
-                  "com.indigojs.core.Utils",
-                  "com.indigojs.core.Widget", function() {
+                   "com.indigojs.core.Utils",
+                   "com.indigojs.core.Widget", function() {
        main();
     });
 </script>

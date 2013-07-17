@@ -60,9 +60,11 @@ register('impl.jquery::IWidget', function() {
                 },
                 wrap: function(elem) {
                     //return !o.wrap(elem.$) || _; //bug http://bugs.jquery.com/ticket/14131
-                    if(o[0].parentNode)
-                       o[0].parentNode.insertBefore(elem.$[0], o[0]);
-                    elem.$[0].appendChild(o[0]);
+                    if (elem.$.length > 0) {
+                        if(o[0].parentNode)
+                           o[0].parentNode.insertBefore(elem.$[0], o[0]);
+                        elem.$[0].appendChild(o[0]);
+                    }
                     return _;
                 },
                 html: function(value) {
