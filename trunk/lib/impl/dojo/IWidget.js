@@ -5,6 +5,8 @@
  * Author: David Gofman
  */
 
+'use strict';
+
 register('impl.dojo::IWidget', function() {
 })
 .define({
@@ -63,6 +65,7 @@ register('impl.dojo::IWidget', function() {
                     if(o[0].parentNode)
                        o[0].parentNode.insertBefore(elem.$[0], o[0]);
                     elem.$[0].appendChild(o[0]);
+                    return _;
                 },
                 html: function(value) {
                     return undef(value) ? o[0].innerHTML : !(o[0].innerHTML = value) || _;

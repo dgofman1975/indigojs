@@ -5,6 +5,8 @@
  * Author: David Gofman
  */
 
+'use strict';
+
 register('com.indigojs.controls::ColorPicker', function(name) {
     this.$super(IWidget.create('<div class="color-picker">' +
                               '  <div class="pallete" style="height: 100px; width: 180px;">'   +
@@ -40,7 +42,7 @@ register('com.indigojs.controls::ColorPicker', function(name) {
                 _.$sliderClickHandler = function(e, y) {
                     e.preventDefault && e.preventDefault();
                     if (undef(y)) {
-                        y = e.pageY - _.$slider.offset().top;
+                        y = e.clientY - _.$slider.offset().top;
                         if (Math.round(y) == _.$scursor.y()) {
                             return;
                         }

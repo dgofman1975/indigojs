@@ -5,6 +5,8 @@
  * Author: David Gofman
  */
 
+'use strict';
+
 var LOGALL    = 0,
     LOGLEVEL1 = 1,
     LOGLEVEL2 = 2,

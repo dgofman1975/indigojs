@@ -5,6 +5,8 @@
  * Author: David Gofman
  */
 
+'use strict';
+
 register('com.indigojs.core::Loader', function() {
     this.uid = Indigo.inner.genUUID();
     Indigo.inner.instances[this.uid] = this;
@@ -20,7 +22,8 @@ register('com.indigojs.core::Loader', function() {
         },
         include: function() {
             var Loader = com.indigojs.core.Loader,
-                callBack = null, length = arguments.length;
+                args = [].slice.call(arguments),
+                callBack = null, length = args.length;
 
             if (Loader.libDir == null){
                 var scripts = document.getElementsByTagName('script');
@@ -30,24 +33,22 @@ register('com.indigojs.core::Loader', function() {
                         Loader.libDir = script.src.substr(0, index);
 
                         Loader.lang = script.lang;
+                        /*DEBUG*/ var result = new RegExp('[\\?&]lang=([^&#]*)').exec(location.search);
+                        /*DEBUG*/ Loader.lang = result ? result[1] : null;
                         if (!Loader.lang || Loader.lang == '@LANG@')
                              Loader.lang = 'native';
-                        if (Loader.autoInclude && Loader.lang != 'native') {
-                            var script = document.createElement('script');
-                            script.setAttribute('type', 'text/javascript');
-                            script.src = Loader.libDir + '../vendor/' + Loader.lang + '.js';
-                            document.getElementsByTagName('head')[0].appendChild(script);
-                        }
+                        if (Loader.autoInclude && Loader.lang != 'native')
+                            args.unshift('vendor/' + Loader.lang);
                         break;
                     }
                 }
             }
 
-            if ((callBack = arguments[length - 1]) instanceof Function)
+            if ((callBack = args[length - 1]) instanceof Function)
                  length--;
 
             var loader = new Loader();
-            loader.load([].slice.call(arguments, 0, length), callBack);
+            loader.load([].slice.call(args, 0, length), callBack);
         }
     },
     protected: {
@@ -66,9 +67,10 @@ register('com.indigojs.core::Loader', function() {
             var done = false;
             script.onload = script.onreadystatechange = function() {
                 if ( !done && (!this.readyState ||
-                        this.readyState === "loaded" || this.readyState === "complete") ) {
+                        this.readyState === 'loaded' || this.readyState === 'complete') ) {
                     done = true;
                     script.onload = script.onreadystatechange = null;
+                    /*DEBUG*/ console.info(cls + ' loaded...');
                     _.ready(cls, listeners);
                 }
             };

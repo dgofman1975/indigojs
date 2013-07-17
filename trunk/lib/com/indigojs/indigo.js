@@ -100,7 +100,9 @@ Function.prototype.define = function(apis) {
             Indigo.callHook(this, name, args, ++Indigo.inner.count);
             args.splice(0, 0, _);
             _.__fn__ = name;
+            /*DEBUG*/ try {
             return func.apply(this, args);
+            /*DEBUG*/ } catch (e) { debugger; }
         };
     };
 
