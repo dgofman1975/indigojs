@@ -22,6 +22,10 @@
         widget.move("10px", "20px").size("500px", "250px");
         Assert.assertEquals(widget.offset().top, 60, "Widget offset top");
         Assert.assertEquals(widget.offset().left, 50, "Widget offset left");
+        Assert.assertEquals(widget.offset().right, 560, "Widget offset right");
+        Assert.assertEquals(widget.offset().bottom, 320, "Widget offset bottom");
+        Assert.assertEquals(widget.offset().width, 510, "Widget offset width");
+        Assert.assertEquals(widget.offset().height, 260, "Widget offset height");
         Assert.assertEquals(widget.x(), 10, "Widget x");
         Assert.assertEquals(widget.y(), 20, "Widget y");
         Assert.assertEquals(widget.width(), 500, "Widget width");
