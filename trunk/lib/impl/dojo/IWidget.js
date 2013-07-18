@@ -18,16 +18,32 @@ register('impl.dojo::IWidget', function() {
         //http://dojotoolkit.org/reference-guide/1.9/dojo/query.html#standard-css3-selectors
         find: function(selector, parent, ref) {
             if (selector.$) return selector;
-            return IWidget.shim(IWidget.findAll(selector, parent).at(0), ref);
+            var all = (parent || dojo).query(selector);
+            return IWidget.shim(all, ref).eq(0);
         },
-        findAll: function(selector, parent) {
-            return (parent || dojo).query(selector);
-        },
-        shim: function(o, _) {
+        shim: function(all, _) {
+            var o = all, index = 0;
             var apis = {
-                $: o, //keep reference to jquery object
-                find: function(selector, parent) {
+                $: o, //keep reference to the current object
+                length: function() {
+                    return all.length;
+                },
+                eq: function(i) {
+                    apis.$ = o = all.at(index = i);
+                    return apis;
+                },
+                find: function(selector) {
                     return IWidget.find(selector, o);
+                },
+                foreach: function(handler, startIndex, endIndex) {
+                    startIndex = startIndex || 0;
+                    endIndex = endIndex || apis.length();
+                    var oldIndex = index;
+                    for (var i = startIndex; i < endIndex; i++) {
+                        if (handler(apis.eq(i), i, all) === false)
+                            break;
+                    }
+                    return apis.eq(oldIndex);
                 },
                 offset: function() {
                     return o[0].getBoundingClientRect();
@@ -45,10 +61,11 @@ register('impl.dojo::IWidget', function() {
                     return undef(value) ? o.style('height')[0] : !o.style('height', value) || _;
                 },
                 css: function(value) {
-                    var cs = dojo.getComputedStyle(o[0]);
-                    return typeof(value) == 'string' ?
-                            cs.getPropertyValue ? cs.getPropertyValue(value) :
-                            cs.getAttribute(value) /*IE8*/ : !o.style(value) || _;
+                    if(typeof(value) == 'string')
+                        return o[0].getStyle(value);
+                    for(var key in value)
+                        o[0].setStyle(key, value[key]);
+                    return _;
                 },
                 val: function(value) {
                     return undef(value) ? o[0].value : !(o[0].value = value) || _;
@@ -64,43 +81,51 @@ register('impl.dojo::IWidget', function() {
                     return undef(value) ? o.attr(name) : !o.attr(name, value) || _;
                 },
                 wrap: function(elem) {
+                    var d = o[0]; //Dom
                     if (elem.$.length > 0) {
-                        if(o[0].parentNode)
-                           o[0].parentNode.insertBefore(elem.$[0], o[0]);
-                        elem.$[0].appendChild(o[0]);
+                        if(d.parentNode)
+                           d.parentNode.insertBefore(elem.$[0], d);
+                        elem.$[0].appendChild(d);
                     }
                     return _;
                 },
                 html: function(value) {
-                    return undef(value) ? o[0].innerHTML : !(o[0].innerHTML = value) || _;
+                    var d = o[0]; //Dom
+                    return undef(value) ? d.innerHTML : !(d.innerHTML = value) || _;
                 },
                 text: function(value) {
-                    return undef(value) ? o[0].textContent : !(o[0].textContent  = value) || _;
+                    var d = o[0]; //Dom
+                    if (d.textContent)
+                        return undef(value) ? d.textContent : (d.textContent = value) != value || _;
+                    return undef(value) ? d.innerText : (d.innerText = value) != value || _; //IE8
                 },
                 bind: function(type, listener) { //cannot use dojo connect such as not supporting disconnect by type or listener
-                    if (o[0].attachEvent) {
-                        o[0].attachEvent('on' + type, listener);
+                    var d = o[0]; //Dom
+                    if (d.attachEvent) {
+                        d.attachEvent('on' + type, listener);
                     } else {
-                        o[0].addEventListener(type, listener);
+                        d.addEventListener(type, listener);
                     }
                     return _;
                 },
                 unbind: function(type, listener) {
-                    if (o[0].detachEvent) {
-                        o[0].detachEvent('on' + type, listener);
+                    var d = o[0]; //Dom
+                    if (d.detachEvent) {
+                        d.detachEvent('on' + type, listener);
                     } else {
-                        o[0].removeEventListener(type, listener);
+                        d.removeEventListener(type, listener);
                     }
                     return _;
                 },
                 dispatch: function(type, classType) {
+                    var d = o[0]; //Dom
                     if (document.createEventObject) {
                         var e = document.createEventObject();
-                        o[0].fireEvent('on' + type, e);
+                        d.fireEvent('on' + type, e);
                     } else {
                         var e = document.createEvent(classType || 'HTMLEvents');
                         e.initEvent(type, true, false);
-                        o[0].dispatchEvent(e);
+                        d.dispatchEvent(e);
                     }
                     return _;
                 },
@@ -118,3 +143,25 @@ register('impl.dojo::IWidget', function() {
         }
     }
 });
+
+if (!(CSSStyleDeclaration.prototype.setProperty instanceof Function)) {
+    //IE 8
+    Element.prototype.getStyle = function(name) {
+        var value = this.currentStyle[name.replace(/\-(\w)/g, function(m, value) {
+            return value.toUpperCase();
+        })];
+        return value != 'auto' ? value : 0;
+    };
+    Element.prototype.setStyle = function(name, value) {
+        this.style.setAttribute(name.replace(/\-(\w)/g, function(m, value) {
+            return value.toUpperCase();
+        }), value);
+    };
+} else {
+    Element.prototype.getStyle = function(name) {
+        return dojo.getComputedStyle(this).getPropertyValue(name);
+    };
+    Element.prototype.setStyle = function(name, value) {
+        this.style.setProperty(name, value);
+    };
+};

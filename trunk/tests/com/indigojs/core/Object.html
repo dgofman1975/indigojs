@@ -21,19 +21,19 @@
             })
             .property({
                 getterVar: ["A::Custom Getter", null,
-                    function(_) {
+                    function(_ /*Optional - the current value*/) {
                         return _ + " Variable";
                 }],
 
                 setterVar: ["A::Custom Setter",
-                    function(_, value) {
+                    function(value, _ /*Optional - the current value*/) {
                         return _ + value;
                 }],
 
                 setGetVar: ["A::Custom Setter/Getter",
-                    function(_, value) { //setter
+                    function(value, _ /*Optional - the current value*/) { //setter
                         return value;
-                    }, function(_) { //getter
+                    }, function(_ /*Optional - the current value*/) { //getter
                         return _ + " Variable";
                 } /*, null (optional) */],
 

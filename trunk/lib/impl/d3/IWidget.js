@@ -20,17 +20,32 @@ register('impl.d3::IWidget', function() {
         },
         find: function(selector, parent, ref) {
             if (selector.$) return selector;
-            var o = selector instanceof Array ? selector : (parent || d3).select(selector);
-            return IWidget.shim(o, ref);
+            var all = selector instanceof Array ? selector : (parent || d3).selectAll(selector);
+            return IWidget.shim(all, ref).eq(0);
         },
-        findAll: function(selector, parent) {
-            return selector instanceof Array ? selector : (parent || d3).selectAll(selector);
-        },
-        shim: function(o, _) {
+        shim: function(all, _) {
+            var o = all, index = 0;
             var apis = {
-                $: o, //keep reference to jquery object
-                find: function(selector, parent) {
+                $: o, //keep reference to the current object
+                length: function() {
+                    return all[0].length;
+                },
+                eq: function(i) {
+                    apis.$ = o = d3.select(all[0][index = i]);
+                    return apis;
+                },
+                find: function(selector) {
                     return IWidget.find(selector, o);
+                },
+                foreach: function(handler, startIndex, endIndex) {
+                    startIndex = startIndex || 0;
+                    endIndex = endIndex || apis.length();
+                    var oldIndex = index;
+                    for (var i = startIndex; i < endIndex; i++) {
+                        if (handler(apis.eq(i), i, all) === false)
+                            break;
+                    }
+                    return apis.eq(oldIndex);
                 },
                 offset: function() {
                     return o.node().getBoundingClientRect();

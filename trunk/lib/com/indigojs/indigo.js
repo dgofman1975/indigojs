@@ -61,7 +61,7 @@ var Indigo = com.indigojs.Indigo = {
                 };
             if (setter === true || setter instanceof Function)
                 o.set = function (value) {
-                    var newValue = setter instanceof Function ? setter(val, value) : value;
+                    var newValue = setter instanceof Function ? setter(value, val) : value;
                     Indigo.propHook(true, this, name, val, newValue);
                     val = newValue;
                 };
