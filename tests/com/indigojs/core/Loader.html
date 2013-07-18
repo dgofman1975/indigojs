@@ -60,6 +60,30 @@
         span.append(IWidget.create("<p>BEFORE</p>"), "before");
         span.append(IWidget.create("<p>AFTER</p>"), "after");
 
+        var p = widget.find("p");
+        p.foreach(function(el, index, all) {
+            el.css({'font-weight':'bold'}) //apply for all divs a new style
+        })
+        .css({'font-style':'italic'}) //apply new style only for first div
+        .eq(1).css({'text-decoration': 'underline'})
+        .foreach(function(el, index, all) {
+            el.css({'text-align':'center'}) //apply for all between 1 and last - 1
+        }, 1, p.length() - 1)
+        .foreach(function(el, index, all) {
+            el.css({'color':'blue'}); //apply style only for first 2 divs
+            if (index == 1)
+                return false; //terminate each loop
+        });
+
+        Assert.assertEquals(p.eq(0).text(), "Hello World!", "P 1 text");
+        Assert.assertEquals(p.eq(0).css('font-weight'), 700, "P 1 font weight");
+        Assert.assertEquals(p.eq(0).css('font-style'), "italic", "P 1 font style");
+        Assert.assertEquals(p.eq(0).css('text-decoration'), "none", "P 1 text decoration");
+        Assert.assertEquals(p.eq(0).css('text-align'), "start", "P 1 text align");
+        Assert.assertEquals(p.eq(0).css('color'), "rgb(0, 0, 255)", "P 1 color");
+
+        //p[0].append(IWidget.create("<p>AFTER</p>"), "after");
+
         Utils.log(LOGALL, Loader.list());
     }
   </script>
