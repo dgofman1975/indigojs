@@ -91,9 +91,14 @@
         assert(2, "AFTER", 700, "normal", "none", "center", "rgb(0, 0, 0)");
         assert(3, "LAST", 700, "normal", "none", "start", "rgb(0, 0, 0)");
 
+        widget.destroy();
+
         Assert.result();
 
-        Utils.log(LOGALL, Loader.list());
+        setTimeout(function() {
+            Utils.log(LOGALL, "Destroyed all Objects: "  + (Indigo.uids().length == 0));
+            Utils.log(LOGALL, "Loaded files:" + Loader.list());
+        }, 10);
     }
   </script>
 </head>
