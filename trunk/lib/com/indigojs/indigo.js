@@ -15,18 +15,16 @@ window.undef = function(value) {
 }
 
 window.register = function(pkg_class, constractor) {
-    var s = pkg_class.split('::');
-    var pkgs = s[0].split('.');
+    var pkgs = pkg_class.split(/::|\./);
+    var className = pkgs.pop();
     var p = window;
     for(var i = 0; i < pkgs.length; i++)
         p = p[pkgs[i]] || (p[pkgs[i]] = {});
-    if (s.length > 1) {
-        constractor.className = s[1];
-        p[s[1]] = constractor;
-        if (undef(window[s[1]])) //create alias
-            window[s[1]] = constractor;
-    }
-    constractor.package = s[0];
+    constractor.className = className;
+    p[className] = constractor;
+    if (undef(window[className])) //create alias
+        window[className] = constractor;
+    constractor.package = pkgs.join('.');
     return constractor;
 };
 
