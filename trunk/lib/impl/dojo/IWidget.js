@@ -9,7 +9,7 @@
 
 register('impl.dojo::IWidget', function() {
 })
-.define({
+.$define({
     static: {
         create: function(html, ref) {
             var o = dojo.query(dojo.create("div", { innerHTML:html }).firstChild);

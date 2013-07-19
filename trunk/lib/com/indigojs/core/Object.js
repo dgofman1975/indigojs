@@ -16,9 +16,10 @@ register('com.indigojs.core::Object', function(name) {
         return name;
     }
 })
-.define({
+.$define({
     public: {
         destroy: function(_) {
+            Indigo.inner.instances[this.uid] = null;
             delete Indigo.inner.instances[this.uid];
             return _.me;
         }

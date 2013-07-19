@@ -71,12 +71,8 @@ var Indigo = com.indigojs.Indigo = {
     uids: function() {
         return Object.keys(this.inner.instances);
     },
-    callHook: function(inst, fName, args, count) {
-        /* debugging function calls */
-    },
-    propHook: function(isSet, inst, propName, value, newValue) {
-        /* debugging getter/setter calls */
-    }
+    /*DEBUG*/callHook: function(inst, fName, args, count) {},
+    /*DEBUG*/propHook: function(isSet, inst, propName, value, newValue) {}
 };
 
 Function.prototype.$define = function(apis) {
@@ -213,7 +209,7 @@ Function.prototype.$extends = function(superClass, apis) {
     try {
         this.parent = eval(superClass);
         if (this.parent) {
-            this.define(apis, this.parent);
+            this.$define(apis, this.parent);
             return;
         }
     }catch(e){}

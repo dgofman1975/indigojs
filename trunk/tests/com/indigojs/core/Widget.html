@@ -30,7 +30,7 @@
   <script type="text/javascript">
 
     function main() {
-        var startTime = new Date().getTime();
+        var endTime, startTime = new Date().getTime();
 
         for(var i = 0; i < 3000; i++) {
             var widget = new Widget("#widget_div", "MyWidget");
@@ -73,8 +73,15 @@
                 if (index == 1)
                     return false; //terminate each loop
             });
+
+            widget.destroy();
         }
-        window.console && console.info("Total time: " + (new Date().getTime() - startTime) + " ms");
+        endTime = new Date().getTime() - startTime;
+
+        setTimeout(function() {
+            window.console && console.info("Destroyed all Objects: "  + (Indigo.uids().length == 0));
+            window.console && console.info("Total time: " + endTime + " ms");
+        }, 10);
     };
   </script>
 </head>

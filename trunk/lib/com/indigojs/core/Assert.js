@@ -9,7 +9,7 @@
 
 register('com.indigojs.core::Assert', function() {
 })
-.define({
+.$define({
     static: {
         errors: 0,
 

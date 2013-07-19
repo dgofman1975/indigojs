@@ -9,7 +9,7 @@
 
 register('impl.d3::IWidget', function() {
 })
-.define({
+.$define({
     static: {
         create: function(html, ref) {
             var o, div = document.createElement('div');
