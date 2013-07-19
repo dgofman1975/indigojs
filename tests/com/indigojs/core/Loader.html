@@ -75,14 +75,23 @@
                 return false; //terminate each loop
         });
 
-        Assert.assertEquals(p.eq(0).text(), "Hello World!", "P 1 text");
-        Assert.assertEquals(p.eq(0).css('font-weight'), 700, "P 1 font weight");
-        Assert.assertEquals(p.eq(0).css('font-style'), "italic", "P 1 font style");
-        Assert.assertEquals(p.eq(0).css('text-decoration'), "none", "P 1 text decoration");
-        Assert.assertEquals(p.eq(0).css('text-align'), "start", "P 1 text align");
-        Assert.assertEquals(p.eq(0).css('color'), "rgb(0, 0, 255)", "P 1 color");
+        var assert = function(index, text, weight, style, decoration, align, color) {
+            var v = "P " + index;
+            Assert.assertEquals(p.eq(index).text(), text, v + " text");
+            Assert.assertEquals(p.eq(index).css('font-weight'), weight, v + " font weight");
+            Assert.assertEquals(p.eq(index).css('font-style'), style, v + " font style");
+            Assert.assertEquals(p.eq(index).css('text-decoration'), decoration, v + " text decoration");
+            Assert.assertEquals(p.eq(index).css('text-align'), align, v + " text align");
+            Assert.assertEquals(p.eq(index).css('color'), color, v + " color");
+        }
 
-        //p[0].append(IWidget.create("<p>AFTER</p>"), "after");
+        Assert.assertEquals(p.length(), 4, "Found 4 P elements");
+        assert(0, "Hello World!", 700, "italic", "none", "start", "rgb(0, 0, 255)");
+        assert(1, "BEFORE", 700, "normal", "underline", "center", "rgb(0, 0, 255)");
+        assert(2, "AFTER", 700, "normal", "none", "center", "rgb(0, 0, 0)");
+        assert(3, "LAST", 700, "normal", "none", "start", "rgb(0, 0, 0)");
+
+        Assert.result();
 
         Utils.log(LOGALL, Loader.list());
     }
