@@ -5,62 +5,72 @@
   <title>Widget.js</title>
 
   <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js"></script>
-  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Assert.js"></script>
   <script type="text/javascript" src="../../../../lib/com/indigojs/core/Object.js"></script>
   <script type="text/javascript" src="../../../../lib/com/indigojs/core/Widget.js"></script>
 
-  <script type="text/javascript" src="../../../../lib/impl/native/IWidget.js"></script>
+  <!-- ~5.2 seconds -->
+  <!--script type="text/javascript" src="../../../../lib/impl/native/IWidget.js"></script>
+
+  <!-- ~6.3 seconds -->
+  <!--script type="text/javascript" src="../../../../lib/vendor/d3.js"></script-->
+  <!--script type="text/javascript" src="../../../../lib/impl/d3/IWidget.js"></script-->
+
+  <!-- ~8.2 seconds -->
+  <!--script type="text/javascript" src="../../../../lib/vendor/dojo.js"></script-->
+  <!--script type="text/javascript" src="../../../../lib/impl/dojo/IWidget.js"></script-->
+
+  <!-- ~9.1 seconds -->
+  <!--script type="text/javascript" src="../../../../lib/vendor/jquery.js"></script-->
+  <!--script type="text/javascript" src="../../../../lib/impl/jquery/IWidget.js"></script-->
 
   <script type="text/javascript">
 
     function main() {
-        var widget = new Widget("#widget_div", "MyWidget");
-        Assert.assertEquals(widget.getName(), "MyWidget", "Widget name");
-        Assert.assertEquals(widget.constructor.className, "Widget", "Class name");
-        Assert.assertEquals(widget.constructor.package, "com.indigojs.core", "Package name");
-        widget.css({"margin":"40px", "padding":"5px"});
-        widget.move("10px", "20px").size("500px", "250px");
-        Assert.assertEquals(widget.offset().top, 60, "Widget offset top");
-        Assert.assertEquals(widget.offset().left, 50, "Widget offset left");
-        Assert.assertEquals(widget.offset().right, 560, "Widget offset right");
-        Assert.assertEquals(widget.offset().bottom, 320, "Widget offset bottom");
-        Assert.assertEquals(widget.offset().width, 510, "Widget offset width");
-        Assert.assertEquals(widget.offset().height, 260, "Widget offset height");
-        Assert.assertEquals(widget.x(), 10, "Widget x");
-        Assert.assertEquals(widget.y(), 20, "Widget y");
-        Assert.assertEquals(widget.width(), 500, "Widget width");
-        Assert.assertEquals(widget.height(), 250, "Widget height");
-        widget.classed("class1");
-        widget.classed("class2");
-        Assert.assertEquals(widget.attr("class"), "class1 class2", "Widget classes");
-        widget.classed("class1", null);
-        Assert.assertEquals(widget.attr("class"), "class2", "Widget new classes");
-        widget.css({"background":"green"});
-        Assert.assertEquals(widget.css("background-color"), "rgb(0, 128, 0)", "Widget background color");
-        widget.attr("myattr1", "myval1");
-        widget.attr("myattr2", "myval2");
-        Assert.assertEquals(widget.attr("myattr1"), "myval1", "Widget get attribute 1");
-        Assert.assertEquals(widget.attr("myattr2"), "myval2", "Widget get attribute 2");
-        widget.attr("myattr2", null);
-        Assert.assertTrue(widget.attr("myattr2") != "myval2", "Widget attribute 2 removed");
+        var startTime = new Date().getTime();
 
-        widget.html("<p>Hello World!</p>");
-        Assert.assertEquals(widget.html(), "<p>Hello World!</p>", "Widget get html");
-        Assert.assertEquals(widget.text(), "Hello World!", "Widget get text");
+        for(var i = 0; i < 3000; i++) {
+            var widget = new Widget("#widget_div", "MyWidget");
+            widget.css({"margin":"40px", "padding":"5px"});
+            widget.move("10px", "20px").size("500px", "250px");
+            widget.classed("class1");
+            widget.classed("class2");
+            widget.classed("class1", null);
+            widget.css({"background":"green"});
+            widget.attr("myattr1", "myval1");
+            widget.attr("myattr2", "myval2");
+            widget.attr("myattr2", null);
 
-        var input = IWidget.create("<input>");
-        input.val("Type here...");
-        Assert.assertEquals(input.val(), "Type here...", "Input value");
-        widget.append(input);
+            widget.html("<p>Hello World!</p>");
 
-        var div = IWidget.create("<div>DIV</div>");
-        widget.append(div);
-        widget.append(IWidget.create("<p>LAST</p>"));
+            var input = IWidget.create("<input>");
+            input.val("Type here...");
+            widget.append(input);
 
-        var span = IWidget.create("<span style='color:red'></span>");
-        div.wrap(span);
-        span.append(IWidget.create("<p>BEFORE</p>"), "before");
-        span.append(IWidget.create("<p>AFTER</p>"), "after");
+            var div = IWidget.create("<div>DIV</div>");
+            widget.append(div);
+            widget.append(IWidget.create("<p>LAST</p>"));
+
+            var span = IWidget.create("<span style='color:red'></span>");
+            div.wrap(span);
+            span.append(IWidget.create("<p>BEFORE</p>"), "before");
+            span.append(IWidget.create("<p>AFTER</p>"), "after");
+
+            var p = widget.find("p");
+            p.foreach(function(el, index, all) {
+                el.css({'font-weight':'bold'}) //apply for all divs a new style
+            })
+            .css({'font-style':'italic'}) //apply new style only for first div
+            .eq(1).css({'text-decoration': 'underline'})
+            .foreach(function(el, index, all) {
+                el.css({'text-align':'center'}) //apply for all between 1 and last - 1
+            }, 1, p.length() - 1)
+            .foreach(function(el, index, all) {
+                el.css({'color':'blue'}); //apply style only for first 2 divs
+                if (index == 1)
+                    return false; //terminate each loop
+            });
+        }
+        window.console && console.info("Total time: " + (new Date().getTime() - startTime) + " ms");
     };
   </script>
 </head>
