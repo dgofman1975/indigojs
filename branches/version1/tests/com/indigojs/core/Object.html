@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Object.js</title>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Assert.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Object.js"></script>
+  <script type="text/javascript">
+        register("my.package::A", function(name) {
+            this.$super(name)
+
+            .protected({
+                protectedVar: "A::Protected Variable",
+            })
+            .public({
+                publicVar: "A::Public Variable"
+            })
+            .final({
+                finalVar: "A::Final Variable"
+            })
+            .property({
+                getterVar: ["A::Custom Getter", null,
+                    function(_ /*Optional - the current value*/) {
+                        return _ + " Variable";
+                }],
+
+                setterVar: ["A::Custom Setter",
+                    function(value, _ /*Optional - the current value*/) {
+                        return _ + value;
+                }],
+
+                setGetVar: ["A::Custom Setter/Getter",
+                    function(value, _ /*Optional - the current value*/) { //setter
+                        return value;
+                    }, function(_ /*Optional - the current value*/) { //getter
+                        return _ + " Variable";
+                } /*, null (optional) */],
+
+                propertyVar: "A::Property Variable"
+            })
+        })
+        .$import("com.indigojs.core.Object")
+        .$extends("com.indigojs.core.Object", {
+               static: {
+                    staticVar: "A::Static Variable"
+                },
+                protected: {
+                    setProtectedVar: function(_, value) {
+                        _.protectedVar = value;
+                        return _.me;
+                    }
+                },
+                public: {
+                    publicFunc: function(_, value) {
+                        _.me.publicVar = value;
+                        return _.me;
+                    },
+                    destroy: function(_) {
+                        return _.$super();
+                    },
+                    getProtectedVar: function(_) {
+                        return _.protectedVar;
+                    }
+                }
+            }
+        );
+
+        //Test inheritance
+        register("my.package::B", function(name) {
+            this.$super(name)
+        })
+        .$extends("my.package.A", {
+                static: {
+                    staticVar: "B::Static Variable"
+                },
+                public: {
+                    publicFunc: function(_, value1, value2) {
+                        _.$super(value1);
+                        _.setProtectedVar(value2); //call protected function
+                        return _.me;
+                    }
+                },
+            }
+        );
+
+        Assert.console = function(message, state) {
+            window.console[state || 'log'](message);
+            document.writeln('<pre style="color:' + (state == "error" ? "red" : state == "info" ? "blue" : "black") + '">' + message + '</pre>');
+        };
+
+        Indigo.callHook = function(inst, fName, args, count) {
+            Assert.console("(" + count + ") " + inst.getName() + "::" + fName + " - " + JSON.stringify(args), "log");
+        };
+
+        Indigo.propHook =  function(isSet, inst, propName, value, newValue) {
+            Assert.console(inst.getName() + "." + propName + ": " + value + (isSet ? "->" +  newValue : ''), "log");
+        };
+
+        Assert.assertEquals(A.staticVar, "A::Static Variable", "A::static value");
+        Assert.assertEquals(B.staticVar, "B::Static Variable", "B::static value");
+
+        var a = new A("ClassA");
+        var b = new B("ClassB");
+
+        Assert.assertEquals(a.getName(), "ClassA", "A::name");
+        Assert.assertEquals(b.getName(), "ClassB", "B::name");
+
+        Assert.assertEquals(a.constructor.className, "A", "class name");
+        Assert.assertEquals(a.constructor.package, "my.package", "class package");
+
+        Assert.assertEquals(a.publicVar, "A::Public Variable", "A::public value");
+        Assert.assertEquals(b.publicVar, "A::Public Variable", "B::public value");
+
+        a.publicVar = "A:New Public Variable";
+        b.publicVar = "B:New Public Variable";
+
+        Assert.assertEquals(a.publicVar, "A:New Public Variable", "A::new public value");
+        Assert.assertEquals(b.publicVar, "B:New Public Variable", "B::new public value");
+
+        Assert.assertEquals(a.protectedVar, undefined, "A::protect value for changing");
+        Assert.assertEquals(a.getProtectedVar(), "A::Protected Variable", "A::protected value");
+        Assert.assertEquals(b.getProtectedVar(), "A::Protected Variable", "B::protected value");
+
+        b.publicFunc("B:New Public Var", "B:New Protected Var");
+        Assert.assertEquals(b.publicVar, "B:New Public Var", "B::change public value using function");
+        Assert.assertEquals(b.getProtectedVar(), "B:New Protected Var", "B::change protected value using function");
+
+        a.finalVar = "A:Try to change a final value";
+        b.finalVar = "B:Try to change a final value";
+        Assert.assertEquals(a.finalVar, "A::Final Variable", "A::final value shouldn't change");
+        Assert.assertEquals(b.finalVar, "A::Final Variable", "B::final value shouldn't change");
+
+        Assert.assertEquals(b.propertyVar, "A::Property Variable", "B::property value");
+        b.propertyVar = "B:New Property value";
+        Assert.assertEquals(b.propertyVar, "B:New Property value", "B::property value changed");
+
+        Assert.assertEquals(b.getterVar, "A::Custom Getter Variable", "B::getter value");
+        b.getterVar = "B:Try to change a getter value";
+        Assert.assertEquals(b.getterVar, "A::Custom Getter Variable", "B::getter value shouldn't change");
+
+        Assert.assertEquals(b.setterVar, "A::Custom Setter", "B::setter value");
+        b.setterVar = " Variable";
+        Assert.assertEquals(b.setterVar, "A::Custom Setter Variable", "B::setter value updated");
+
+        Assert.assertEquals(b.setGetVar, "A::Custom Setter/Getter Variable", "B::setter/getter value");
+        b.setGetVar = "A::NEW Custom Setter/Getter";
+        Assert.assertEquals(b.setGetVar, "A::NEW Custom Setter/Getter Variable", "B::setter/getter value updated");
+
+        Assert.assertEquals(Indigo.uids().length, 2, "Created two instances");
+
+        a.destroy();
+        b.destroy();
+
+        Assert.assertFalse(Indigo.uids().length == 2, "Instances unreleased");
+        Assert.assertTrue(Indigo.uids().length == 0, "Instances released");
+  </script>
+</head>
+<body>
+</body>
+</html>
