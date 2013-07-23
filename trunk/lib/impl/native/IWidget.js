@@ -20,10 +20,10 @@ register('impl.native::IWidget', function() {
         },
         find: function(selector, parent, ref) {
             if (selector.$) return selector;
-            try {
-                var all = typeof(selector) == 'string' ? (parent || document).querySelectorAll(selector) : selector;
-                return IWidget.shim(all, ref).eq(0);
-            }catch(e) { throw new Error("Invalid selector: " + selector, e)}
+            /*DEBUG*/try {
+            var all = typeof(selector) == 'string' ? (parent || document).querySelectorAll(selector) : selector;
+            return IWidget.shim(all, ref).eq(0);
+            /*DEBUG*/}catch(e) { throw new Error("Invalid selector: " + selector, e)}
         },
         shim: function(all, _) {
             var o = all, index = 0;
