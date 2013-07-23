@@ -97,6 +97,9 @@ register('impl.native::IWidget', function() {
                         return !o.removeAttribute(name) || _;
                     return undef(value) ? o.getAttribute(name) : !o.setAttribute(name, value) || _;
                 },
+                prop: function(name, value) {
+                    return !(o[name] = value) || _;
+                },
                 wrap: function(elem) {
                     if(o.parentNode)
                        o.parentNode.insertBefore(elem.$, o);

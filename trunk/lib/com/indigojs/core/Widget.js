@@ -64,6 +64,9 @@ register('com.indigojs.core::Widget', function(selector, name) {
             attr: function(_, name, value) {
                 return _.$can.attr(name, value);
             },
+            prop: function(_, name, value) {
+                return _.$can.prop(name, value);
+            },
             wrap: function(elem) {
                 return _.$can.wrap(elem);
             },

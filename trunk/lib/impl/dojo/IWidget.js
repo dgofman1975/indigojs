@@ -80,6 +80,9 @@ register('impl.dojo::IWidget', function() {
                         return !o.removeAttr(name) || _;
                     return undef(value) ? o.attr(name) : !o.attr(name, value) || _;
                 },
+                prop: function(name, value) {
+                    return !(o[0][name] = value) || _;
+                },
                 wrap: function(elem) {
                     var d = o[0]; //Dom
                     if (elem.$.length > 0) {
