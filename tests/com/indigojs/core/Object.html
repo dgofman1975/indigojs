@@ -97,6 +97,8 @@
             Assert.console(inst.getName() + "." + propName + ": " + value + (isSet ? "->" +  newValue : ''), "log");
         };
 
+        Assert.codeCoverageStart();
+
         Assert.assertEquals(A.staticVar, "A::Static Variable", "A::static value");
         Assert.assertEquals(B.staticVar, "B::Static Variable", "B::static value");
 
@@ -154,6 +156,8 @@
 
         Assert.assertFalse(Indigo.uids().length == 2, "Instances unreleased");
         Assert.assertTrue(Indigo.uids().length == 0, "Instances released");
+
+        Assert.codeCoverageEnd(true);
   </script>
 </head>
 <body>
