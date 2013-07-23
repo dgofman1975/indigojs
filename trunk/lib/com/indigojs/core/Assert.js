@@ -12,6 +12,7 @@ register('com.indigojs.core::Assert', function() {
 .$define({
     static: {
         errors: 0,
+        funcCover: {},
 
         assertEquals: function(actual, expected, message) {
             var error = (actual != expected);
@@ -33,5 +34,37 @@ register('com.indigojs.core::Assert', function() {
         console: function(msg, state) {
             window.console && console[state || 'log'](msg);
         },
+        codeCoverageStart: function() {
+            Assert.funcCover = {};
+            this.oldCallHook = Indigo.callHook;
+            Indigo.callHook = function(inst, fName, args, count) {
+                var cname = inst.constructor.package + '.' + inst.constructor.className;
+                if (undef(Assert.funcCover[cname]))
+                    Assert.funcCover[cname] = {};
+                if (undef(Assert.funcCover[cname][fName]))
+                    Assert.funcCover[cname][fName] = 0;
+                Assert.funcCover[cname][fName]++;
+            };
+        },
+        codeCoverageEnd: function(full) {
+            Indigo.callHook = this.oldCallHook;
+
+            var output = [];
+            output.push('Coverage Functions:');
+            for (var cname in Assert.funcCover) {
+                var total = 0, covered = 0, fn = [],
+                    apis = Assert.funcCover[cname];
+                for (var name in apis) {
+                    total++;
+                    fn.push('    ' + name + ': ' + apis[name]);
+                    if (apis[name] != 0) covered++;
+                }
+                if (fn.length > 0) {
+                    output.push(cname + ': ' + Math.floor(covered / total * 100) + '%');
+                    if (full) output = output.concat(fn);
+                }
+            }
+            this.console(output.join('\n'), 'info');
+        }
     }
 });
