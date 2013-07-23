@@ -92,15 +92,19 @@ Function.prototype.$define = function(apis) {
             var _ = Indigo.inner.instances[this.uid];
             var args = [].slice.call(arguments);
             /*DEBUG*/Indigo.callHook(this, name, args, ++Indigo.inner.count);
+            /*DEBUG*/classType.fCoverage[name]++;
             args.splice(0, 0, _);
             _.__fn__ = name;
             return func.apply(this, args);
         };
     };
 
+    /*DEBUG*/ classType.fCoverage = {}; //Function coverage
     var access = function(apis, classApis, visible) {
-        for(var name in apis)
+        for(var name in apis) {
+            /*DEBUG*/ classType.fCoverage[name] = 0;
             classApis[name] = { value: execute(name, apis), enumerable: visible };
+        }
         return classApis;
     };
 
