@@ -21,8 +21,7 @@ register('com.indigojs.controls::MenuBar', function(selector, name) {
         $selectedIndex: -1,
         $selectedItem:  null, //MenuItem;
         $items: [],     //Array<MenuItem>
-        $menuItems: [], //Array<MenuItem>
-        $menuLI: null   //JQuery
+        $menuItems: []  //Array<MenuItem>
     })
     .callLater('init');
 })
@@ -83,19 +82,20 @@ register('com.indigojs.controls::MenuBar', function(selector, name) {
 
                 var onMenuClickHandler = function(e) {
                     e.preventDefault && e.preventDefault();
-                    var index = _.menubar.find(e.currentTarget).attr('index');
-                    if (_.$menuItems[index].children == null || _.$menuItems[index].children.length == 0) {
-                        if (self.selectedIndex() != index) {
-                            _.$itemClickEventHandler(_.$menuItems[index], $(e.currentTarget));
+                    var li = _.menubar.find(e.currentTarget);
+                    var index = li.attr('index');
+                    if (_.$menuItems[index].parent) {
+                        if (_.selectedIndex() != index) {
+                            _.$itemClickEventHandler(_.$menuItems[index], li);
                             _.selectedIndex(index);
-                            _.$menuLI.find('ul').css({'visibility':'hidden'});
+                            li.parent().css({'visibility':'hidden'});
                         }
                     }
                 };
 
                 var onOpenSubMenuHandler = function(e) {
                     e.preventDefault && e.preventDefault();
-                    _.menubar.find(e.currentTarget).findAll('ul').css({'visibility':'visible'});
+                    _.menubar.find(e.currentTarget).find('ul').css({'visibility':'visible'});
                 };
 
                 var onCloseSubMenuHandler = function(e) {
@@ -103,10 +103,11 @@ register('com.indigojs.controls::MenuBar', function(selector, name) {
                     _.menubar.find(e.currentTarget).find('ul').css({'visibility':'hidden'});
                 };
 
-                _.menubar.find('li')
-                         .bind('click', onMenuClickHandler)
-                         .bind('mouseover', onOpenSubMenuHandler)
-                         .bind('mouseout', onCloseSubMenuHandler);
+                _.menubar.find('li').each(function(el, index, all) {
+                    el.bind('click', onMenuClickHandler)
+                    el.bind('mouseover', onOpenSubMenuHandler)
+                    el.bind('mouseout', onCloseSubMenuHandler);
+                });
                 return _.me;
             }
         },
