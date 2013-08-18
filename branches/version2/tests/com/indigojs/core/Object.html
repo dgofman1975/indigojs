@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Object.js</title>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Assert.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Object.js"></script>
+  <script type="text/javascript">
+        register('my.package.A', {
+            static: {
+                staticVar: "A::Static Variable"
+            },
+            namespace: function(_) {
+                _.publicVarA =  "A::Public Variable";
+
+                var privateVar = "A::Private Variable";
+
+                function getPrivateVar() {
+                    return privateVar;
+                }
+
+                function setPrivateVar(value) {
+                    privateVar = value;
+                }
+
+                function getPublicVar() {
+                    return _.publicVarA;
+                }
+
+                return {
+                    include: ['com.indigojs.core.Object'],
+                    extend: 'com.indigojs.core.Object',
+                    init: function(name) {
+                        _.supra(name);
+                    },
+                    inherit: {
+                        getPublicVar: getPublicVar,
+                        getPrivateVar: getPrivateVar,
+                        setPrivateVar: setPrivateVar,
+
+                        destroy: function() { /*override*/
+                           window.console && console.log('Destroy A');
+                            return _.supra();
+                        }
+                    }
+                };
+            }
+        });
+
+        //Test inheritance
+        register('my.package.B', {
+            static: {
+                staticVar: "B::Static Variable"
+            },
+            namespace: function(_, share) {
+                var privateVar = "B::Private Variable";
+
+                _.publicVarB =  "B::Public Variable";
+
+                return {
+                    extend: 'my.package.A',
+                    init: function(name) {
+                        _.supra(name);
+                    },
+                    inherit: {
+                        getPublicVar: function() { /*override*/
+                            return _.publicVarB;
+                        },
+
+                        getPrivateVar: function() { /*override*/
+                            return _.supra() + privateVar;
+                        },
+                        setPrivateVar: function(value1, value2) { /*override*/
+                           _.supra(value1);
+                           privateVar = value2;
+                        },
+
+                        destroy: function() { /*override*/
+                            _.supra();
+                            window.console && console.log('Destroy B');
+                        }
+                    }
+                };
+            }
+        });
+
+        Assert.console = function(message, state) {
+            window.console && console[state || 'log'](message);
+            document.writeln('<pre style="color:' + (state == "error" ? "red" : state == "info" ? "blue" : "black") + '">' + message + '</pre>');
+        };
+
+        Assert.assertEquals(A.staticVar, "A::Static Variable", "A::static value");
+        Assert.assertEquals(B.staticVar, "B::Static Variable", "B::static value");
+
+        var a = new A("ClassA");
+        var b = new B("ClassB");
+
+        Assert.assertEquals(a.getName(), "ClassA", "A::name");
+        Assert.assertEquals(b.getName(), "ClassB", "B::name");
+
+        Assert.assertEquals(a.constructor.className, "A", "class name");
+        Assert.assertEquals(a.constructor.package, "my.package", "class package");
+
+        Assert.assertEquals(a.publicVarA, "A::Public Variable", "A::publicVarA");
+        Assert.assertEquals(b.publicVarA, "A::Public Variable", "B::publicVarA");
+
+        Assert.assertEquals(a.publicVarB, undefined, "A::publicVarB");
+        Assert.assertEquals(b.publicVarB, "B::Public Variable", "B::publicVarB");
+
+        a.publicVarA = "A:New Public Variable";
+        b.publicVarB = "B:New Public Variable";
+
+        Assert.assertEquals(a.getPublicVar(), "A:New Public Variable", "A::new public value");
+        Assert.assertEquals(b.getPublicVar(), "B:New Public Variable", "B::new public value");
+
+        Assert.assertEquals(a.privateVar, undefined, "A:No access to private variable");
+        Assert.assertEquals(b.privateVar, undefined, "B:No access to private variable");
+
+        Assert.assertEquals(a.getPrivateVar(), "A::Private Variable", "A:privateVar");
+        a.setPrivateVar(2);
+        Assert.assertEquals(a.getPrivateVar(), 2, "A:privateVar new value");
+
+        b.setPrivateVar(2, 3);
+        Assert.assertEquals(b.getPrivateVar(), 5, "B:privateVar new value");
+
+        a.destroy();
+        b.destroy();
+
+       // Assert.codeCoverageEnd(true);
+  </script>
+</head>
+<body>
+</body>
+</html>

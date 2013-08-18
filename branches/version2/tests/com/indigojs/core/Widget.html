@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Widget.js</title>
+
+  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Object.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Widget.js"></script>
+
+  <!-- FF: ~5.2 seconds, Chrome: ~1.6 -->
+  <script type="text/javascript" src="../../../../lib/impl/native/IWidget.js"></script>
+  <!-->
+
+  <!-- FF: ~6.3 seconds, Chrome: ~1.8 ->
+  <script type="text/javascript" src="../../../../lib/vendor/d3.js"></script>
+  <script type="text/javascript" src="../../../../lib/impl/d3/IWidget.js"></script>
+  <!-->
+
+  <!-- FF: ~8.2 seconds, Chrome: ~4.0 ->
+  <script type="text/javascript" src="../../../../lib/vendor/dojo.js"></script>
+  <script type="text/javascript" src="../../../../lib/impl/dojo/IWidget.js"></script>
+  <!-->
+
+  <!-- FF: ~9.1 seconds, Chrome: ~3.8 ->
+  <script type="text/javascript" src="../../../../lib/vendor/jquery.js"></script>
+  <script type="text/javascript" src="../../../../lib/impl/jquery/IWidget.js"></script>
+  <!-->
+
+  <script type="text/javascript">
+
+    function main() {
+        var endTime, startTime = new Date().getTime();
+
+        for(var i = 0; i < 3000; i++) {
+            var widget = new Widget("#widget_div", "MyWidget");
+            widget.css({"margin":"40px", "padding":"5px"});
+            widget.move("10px", "20px").size("500px", "250px");
+            widget.classed("class1");
+            widget.classed("class2");
+            widget.classed("class1", null);
+            widget.css({"background":"green"});
+            widget.attr("myattr1", "myval1");
+            widget.attr("myattr2", "myval2");
+            widget.attr("myattr2", null);
+
+            widget.html("<p>Hello World!</p>");
+
+            var input = IWidget.create("<input>");
+            input.val("Type here...");
+            widget.append(input);
+
+            var div = IWidget.create("<div>DIV</div>");
+            widget.append(div);
+            widget.append(IWidget.create("<p>LAST</p>"));
+
+            var span = IWidget.create("<span style='color:red'></span>");
+            div.wrap(span);
+            span.append(IWidget.create("<p>BEFORE</p>"), "before");
+            span.append(IWidget.create("<p>AFTER</p>"), "after");
+
+            var p = widget.find("p");
+            p.each(function(el, index, all) {
+                el.css({'font-weight':'bold'}) //apply for all divs a new style
+            })
+            .css({'font-style':'italic'}) //apply new style only for first div
+            .eq(1).css({'text-decoration': 'underline'})
+            .each(function(el, index, all) {
+                el.css({'text-align':'center'}) //apply for all between 1 and last - 1
+            }, 1, p.length() - 1)
+            .each(function(el, index, all) {
+                el.css({'color':'blue'}); //apply style only for first 2 divs
+                if (index == 1)
+                    return false; //terminate each loop
+            });
+
+            widget.destroy();
+        }
+        endTime = new Date().getTime() - startTime;
+
+        setTimeout(function() {
+            window.console && console.info("Destroyed all Objects: "  + (Indigo.uids().length == 0));
+            window.console && console.info("Total time: " + endTime + " ms");
+        }, 10);
+    };
+  </script>
+</head>
+<body>
+    <div id="widget_div" style="position:absolute; background-color:red">
+    </div>
+</body>
+<script type="text/javascript">
+    main();
+</script>
+</html>

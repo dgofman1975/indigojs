@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Utils.js</title>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/indigo.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Assert.js"></script>
+  <script type="text/javascript" src="../../../../lib/com/indigojs/core/Utils.js"></script>
+  <script type="text/javascript">
+
+      Utils.log(LOGALL, "LOGLEVEL=" + LOGLEVEL);
+      Utils.log(LOGLEVEL, "Display in the console.");
+      Utils.log(LOGLEVEL + 1, "Ignore this message.");
+
+      Assert.console = function(message, state) {
+          window.console[state || 'log'](message);
+          document.writeln('<pre style="color:' + (state == 'error' ? 'red' : 'black') + '">' + message + '</pre>');
+      };
+
+      var str = '<li data="<%=data%>" index="<%=index%>"><%=data%></li>';
+      Assert.assertEquals(Utils.template(str, {data:"DATA", index:1}), '<li data="DATA" index="1">DATA</li>', "Template");
+
+      Assert.assertEquals(Utils.substitute("{0} do you {2}, {1}? {0} do you {2}? {0}, {1}? {0}?", "Why", "Willy", "cry"),
+                                          "Why do you cry, Willy? Why do you cry? Why, Willy? Why?");
+
+  </script>
+</head>
+<body>
+</body>
+</html>
