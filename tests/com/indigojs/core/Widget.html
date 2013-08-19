@@ -78,10 +78,7 @@
         }
         endTime = new Date().getTime() - startTime;
 
-        setTimeout(function() {
-            window.console && console.info("Destroyed all Objects: "  + (Indigo.uids().length == 0));
-            window.console && console.info("Total time: " + endTime + " ms");
-        }, 10);
+        window.console && console.info("Total time: " + endTime + " ms");
     };
   </script>
 </head>
