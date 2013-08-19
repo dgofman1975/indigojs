@@ -1,15 +1,13 @@
 /**
  *
- * Copyright © 2013 Softigent Inc..
+ * Copyright © 2013 Softigent Inc.
  *
  * Author: David Gofman
  */
 
 'use strict';
 
-register('impl.jquery::IWidget', function() {
-})
-.$define({
+register('impl.jquery.IWidget', {
     static: {
         create: function(html, ref) {
             return IWidget.shim($(html), ref);

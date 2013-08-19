@@ -1,15 +1,13 @@
 /**
  *
- * Copyright © 2013 Softigent Inc..
+ * Copyright © 2013 Softigent Inc.
  *
  * Author: David Gofman
  */
 
 'use strict';
 
-register('impl.dojo::IWidget', function() {
-})
-.$define({
+register('impl.dojo.IWidget', {
     static: {
         create: function(html, ref) {
             var o = dojo.query(dojo.create("div", { innerHTML:html }).firstChild);

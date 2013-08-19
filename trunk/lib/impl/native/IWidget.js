@@ -1,15 +1,13 @@
 /**
  *
- * Copyright © 2013 Softigent Inc..
+ * Copyright © 2013 Softigent Inc.
  *
  * Author: David Gofman
  */
 
 'use strict';
 
-register('impl.native::IWidget', function() {
-})
-.$define({
+register('impl.native.IWidget', {
     static: {
         create: function(html, ref) {
             var o, div = document.createElement('div');

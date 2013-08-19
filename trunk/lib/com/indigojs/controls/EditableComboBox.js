@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2013 Softigent Inc..
+ * Copyright © 2013 Softigent Inc.
  *
  * Author: David Gofman
  */
